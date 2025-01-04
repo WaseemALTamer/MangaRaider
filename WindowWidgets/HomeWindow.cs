@@ -8,8 +8,9 @@ using System.Collections.Generic;
 class HomeWindow : Canvas
 {
 
-    public UInt32 Backgruond = 0xff1f1f1f;
+    public UInt32 Backgruond = 0xff000000;
     public MangaContent[] MangasData;
+    public WindowsStruct Windows;
 
 
     public MainWindow Parent;
@@ -41,13 +42,17 @@ class HomeWindow : Canvas
     {
         Width = Parent.Width;
         Height = Parent.Height;
+
+        MangaScrollViewerWidget.Width = Width;
+        MangaScrollViewerWidget.Height = Height;
+
         Background = new SolidColorBrush(Color.FromUInt32(Backgruond));
     }
 
-    public void PassContent(MangaContent[] Data)
+    public void PassContent(MangaContent[] mangasData, WindowsStruct WindowData)
     {
-        MangasData = Data;
-        MangaScrollViewerWidget.PassContent(Data);
+        MangasData = mangasData;
+        Windows = WindowData;
+        MangaScrollViewerWidget.PassContent(MangasData, Windows);
     }
-
 }

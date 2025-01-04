@@ -11,14 +11,9 @@ using Avalonia.Controls;
 class SmoothScrolling
 {
 
-    ScrollViewer Window { get; set; }
 
-    public SmoothScrolling(ScrollViewer Viwer)
-    {
 
-        Window = Viwer;
-
-    }
+    public Action<double> Trigger { get; set; }
 
 
 
@@ -31,14 +26,15 @@ class SmoothScrolling
     public int Tick = 8; //in ms (7ms is about 125fps)
     public int TimeStamp = 0; //in ms
 
+    public bool StopCurrentAnimation = false;
 
 
 
 
-    private bool SS_FunctionRunning = false;
-    private double SS_CurrentVelocity = 0;
+    private bool FunctionRunning = false;
+    private double CurrentVelocity = 0;
     private double CurrentDirection = 0; // 1 is going down and -1 is going up
-    private Stopwatch SS_StopWatch = new Stopwatch();
+    private Stopwatch stopWatch = new Stopwatch();
 
 
 
@@ -49,19 +45,14 @@ class SmoothScrolling
         e.Handled = true; //OverRiding the scrolling function
         if (-(e.Delta.Y / Math.Abs(e.Delta.Y)) != CurrentDirection)
         {
-            SS_CurrentVelocity = 0;
+            CurrentVelocity = 0;
         }
 
 
         CurrentDirection = -(e.Delta.Y / Math.Abs(e.Delta.Y));
+        CurrentVelocity += Math.Abs(ScrollingImpulseSpeed);
 
-        SS_CurrentVelocity += Math.Abs(ScrollingImpulseSpeed);
-
-
-
-
-
-        if (!SS_FunctionRunning)
+        if (!FunctionRunning)
         {
             await ApplySmoothScrolling();
         }
@@ -71,54 +62,52 @@ class SmoothScrolling
 
     private async Task ApplySmoothScrolling()
     {
-        SS_FunctionRunning = true;
-        SS_StopWatch.Start();
-        SS_StopWatch.Restart();
+        FunctionRunning = true;
+        stopWatch.Start();
+        stopWatch.Restart();
 
 
-        while (SS_CurrentVelocity > 0)
+        while (CurrentVelocity > 0)
         {
-            if (SS_StopWatch.ElapsedMilliseconds - TimeStamp < Tick)
+            if (stopWatch.ElapsedMilliseconds - TimeStamp < Tick)
             {
                 await Task.Delay(Tick / 2);
                 continue;
             }
+            if (StopCurrentAnimation) {
+                StopCurrentAnimation = false;
+                break;
+            }
+
             TimeStamp += Tick;
 
 
 
 
-            double _progress = SS_CurrentVelocity * Tick / 1000;
-
-            //if (ScrollingMaxVelocity < SS_CurrentVelocity)
-            //{
-            //    SS_CurrentVelocity = ScrollingMaxVelocity;
-            //}
+            double _progress = CurrentVelocity * Tick / 1000;
 
 
+            if (Trigger != null) Trigger(_progress * CurrentDirection);
+            
 
 
-            Window.Offset = new Avalonia.Vector(Window.Offset.X, Window.Offset.Y + (_progress * CurrentDirection));
-
-            if (ScrollingMaxVelocity < SS_CurrentVelocity) {
-                SS_CurrentVelocity -= (ScrollingConstantDeacceleration * 2 *  SS_CurrentVelocity / ScrollingTrusholdVelocity) * Tick / 1000;
+            if (ScrollingMaxVelocity < CurrentVelocity) {
+                CurrentVelocity -= (ScrollingConstantDeacceleration * 2 *  CurrentVelocity / ScrollingTrusholdVelocity) * Tick / 1000;
                 continue;
             }
 
-            if (SS_CurrentVelocity < ScrollingTrusholdVelocity)
+            if (CurrentVelocity < ScrollingTrusholdVelocity)
             {
-                SS_CurrentVelocity -= (ScrollingConstantDeacceleration * ScrollingDamping) * Tick / 1000;
+                CurrentVelocity -= (ScrollingConstantDeacceleration * ScrollingDamping) * Tick / 1000;
                 continue;
             }
 
-            SS_CurrentVelocity -= ScrollingConstantDeacceleration * Tick / 1000; // apply deacceleration
-
-
+            CurrentVelocity -= ScrollingConstantDeacceleration * Tick / 1000; // apply deacceleration
         }
 
-        SS_CurrentVelocity = 0;
-        SS_FunctionRunning = false;
-        SS_StopWatch.Stop();
+        CurrentVelocity = 0;
+        FunctionRunning = false;
+        stopWatch.Stop();
         TimeStamp = 0;
 
     }

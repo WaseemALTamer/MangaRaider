@@ -7,6 +7,8 @@ using System.Linq;
 using System.IO;
 using System;
 using Avalonia.Threading;
+using System.Threading;
+using Avalonia.Animation;
 
 
 
@@ -15,15 +17,11 @@ namespace MangaReader
     public partial class MainWindow : Window
     {
 
-
-
-        TextBlock test;
-
-        HomeWindow FirstWindow;
-
-
-
+        string MangaDirecotryFileName = "MangasDir.txt";
+        
+        WindowsStruct Windows = new WindowsStruct();
         MangaContent[] MangasData;
+
 
         public MainWindow(){
             InitializeComponent();
@@ -31,8 +29,15 @@ namespace MangaReader
 
         private void OnLoaded(object sender, Avalonia.Interactivity.RoutedEventArgs e)
         {
-            FirstWindow = new HomeWindow(this);
-            Content = FirstWindow;
+            Windows.MasterWindow = this;
+
+            Windows.FirstWindow = new HomeWindow(this);
+            Windows.SecondWindow = new MangaHolder(this);
+            Windows.ThirdWindow = new PagesReader(this);
+
+
+            Content = Windows.FirstWindow;
+            PassContent(); // we can pass the content for the windows
 
             Task.Run(() => LoadContent()); //this will load the content on a thread
         }
@@ -42,19 +47,33 @@ namespace MangaReader
         //this is where the data gets loaded
         private void LoadContent() {
 
-            string directoryPath = "Manga";
+            string directoryPath = "Manga"; // we access the folder that is called Manga if we did not find a file that contain a direcotry
+
+
+            if (File.Exists(MangaDirecotryFileName))
+            {
+                using (StreamReader reader = new StreamReader(MangaDirecotryFileName))
+                {
+                    string content = reader.ReadToEnd();
+                    directoryPath = content;
+                }
+            }
+
+                
 
             if (Directory.Exists(directoryPath)){
                 //Graps all the folers
                 string[] Folders = Directory.GetDirectories(directoryPath);
                 MangasData = new MangaContent[Folders.Length];
 
-                PassContent();
+                PassContent(); // we pass the content after we create the MangaContent
 
 
                 int _indexManga = 0;
                 foreach (string _folder in Folders) {
+                    MangasData[_indexManga] = new MangaContent();
                     MangasData[_indexManga].FolderName = Path.GetFileName(_folder);
+                    MangasData[_indexManga].Path = _folder;
                     string[] _chaptersDir = Directory.GetDirectories(_folder);
 
                     //Grps all the Chapters
@@ -153,7 +172,9 @@ namespace MangaReader
         }
         void PassContent()
         {
-            FirstWindow.PassContent(MangasData);
+            Windows.FirstWindow.PassContent(MangasData , Windows);
+            Windows.SecondWindow.PassContent(Windows);
+            Windows.ThirdWindow.PassContent(Windows);
         }
     }
 }

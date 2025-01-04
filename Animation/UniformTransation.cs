@@ -11,21 +11,12 @@ class UniformTransation
     public double EndingValue;
     public Action<double> Trigger;
     public double CurrentValue;
-    
-    
     public int Tick = 8; //in ms (this is 125fps
+
+
     private bool FunctionRunning = false;
-    //public TransationHoverBehavior(double startingValue, double endingValue, double duration, Action<double> function)
-    //{
-    //    StartingValue = startingValue;
-    //    EndingValue = endingValue;
-    //    Duration = duration;
-    //    Function += function;
-    //    CurrentValue = startingValue;
-    //}
 
 
-    //Over ride the event handler with this function
     public async void TranslateForward(object? sender, object e)
     {
 
@@ -96,10 +87,10 @@ class UniformTransation
             CurrentValue = _delta + _startingValue;
 
 
-            Trigger(CurrentValue);
+            if (Trigger != null) Trigger(CurrentValue);
             
         }
-        Trigger(_endingValue);
+        if (Trigger != null) Trigger(_endingValue);
 
         FunctionRunning = false;
     }
