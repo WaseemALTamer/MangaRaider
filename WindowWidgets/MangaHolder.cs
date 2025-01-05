@@ -132,7 +132,7 @@ class MangaHolder : Canvas
         Canvas.SetLeft(BookMarkedLoad, LeftCanvasBorders.Width + 10);
         Canvas.SetTop(BookMarkedLoad, Height - BottomRightCanvasBorder.Height - BookMarkedLoad.Height - 10);
 
-        if (MangaData.BookMarkedChapter == 0) BookMarkedLoad.Opacity = 0;
+        if (MangaData != null && MangaData.BookMarkedChapter == 0) BookMarkedLoad.Opacity = 0;
         else BookMarkedLoad.Opacity = 1;
     }
 
