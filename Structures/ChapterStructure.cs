@@ -1,4 +1,4 @@
-﻿using Avalonia.Controls;
+using Avalonia.Controls;
 using System;
 using System.IO;
 using System.Linq;
@@ -30,6 +30,10 @@ class ChapterContent{
             NumberOfPages = Directory.GetFiles(folderPath).Length;
             Path = folderPath;
             //Task.Run(() => LoadPagesImagesThread()); //this will load the content on a thread
+        }
+
+        if (MangaData.ChaptersRead == null) {
+            MangaData.ChaptersRead = new int[0];
         }
 
         if (MangaData.ChaptersRead.Contains(Chapter)) return;
