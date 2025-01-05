@@ -99,7 +99,7 @@ class MangaCoversCanvasGrid : Canvas
 
             for (int i = 0; i < MangasData.Length; i++)
             {
-                if (MangasData[i].CoverImage != null)
+                if (MangasData[i] != null && MangasData[i].CoverImage != null)
                 {
                     // Check if the cover for this manga already exists, if not, create it
                     if (MangasCovers[i] == null)

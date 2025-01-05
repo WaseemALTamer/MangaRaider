@@ -38,7 +38,9 @@ class PagesCanvasGrid : Canvas
     private Button ChapterButton;
     private Button PageButton;
     private Button BookMarkButton;
-    
+
+    private Button ImageScalerButton;
+
 
     private ToggleButton LongStripToggleButton;
 
@@ -74,6 +76,15 @@ class PagesCanvasGrid : Canvas
         BookMarkButton.Click += OnBookMarkButtonClicked;
         Children.Add(BookMarkButton);
 
+        ImageScalerButton = new Button
+        {
+            Content = "Test",
+            Background = BordersColor,
+            MinWidth = 50,
+        };
+        Children.Add(ImageScalerButton);
+
+
         LongStripToggleButton = new ToggleButton
         {
             Content = "LongStrip",
@@ -83,11 +94,12 @@ class PagesCanvasGrid : Canvas
         LongStripToggleButton.Click += OnClickLongStripToggleButton;
         Children.Add(LongStripToggleButton);
 
-
+        
 
         ChapterButton.KeyDown += OnKeyDown;
         PageButton.KeyDown += OnKeyDown;
         BookMarkButton.KeyDown += OnKeyDown;
+        ImageScalerButton.KeyDown += OnKeyDown;
         LongStripToggleButton.KeyDown += OnKeyDown;
 
 
@@ -118,28 +130,33 @@ class PagesCanvasGrid : Canvas
             double _chapter = (ChapterData.Chapter - (_season * 100000))/10;
             ChapterButton.Content = $"Chapter: {_chapter}";
             PageButton.Content = $"Page: {ChapterData.CurrentPageNum}";
+            ImageScalerButton.Content = $"Size x{Math.Round(ImageScaler,2)}";
         }
 
         //Add the button to the grid if needed 
         if (ChapterButton.Parent == null) Children.Add(ChapterButton);
         if (PageButton.Parent == null) Children.Add(PageButton);
         if (BookMarkButton.Parent == null) Children.Add(BookMarkButton);
+        if (ImageScalerButton.Parent == null) Children.Add(ImageScalerButton);
         if (LongStripToggleButton.Parent == null) Children.Add(LongStripToggleButton);
 
 
 
         Canvas.SetLeft(ChapterButton, 10);
-        Canvas.SetTop(ChapterButton, 10);
+        Canvas.SetTop(ChapterButton, 10 + Parent.Offset.Y);
 
         Canvas.SetLeft(PageButton, 10);
-        Canvas.SetTop(PageButton, 60);
+        Canvas.SetTop(PageButton, 60 + Parent.Offset.Y);
 
         Canvas.SetLeft(BookMarkButton, 10);
-        Canvas.SetTop(BookMarkButton, 110);
+        Canvas.SetTop(BookMarkButton, Parent.Height + Parent.Offset.Y - 50);
+
 
         Canvas.SetLeft(LongStripToggleButton, 10);
-        Canvas.SetTop(LongStripToggleButton, 160);
+        Canvas.SetTop(LongStripToggleButton, Parent.Height + Parent.Offset.Y - 100);
 
+        Canvas.SetLeft(ImageScalerButton, 10);
+        Canvas.SetTop(ImageScalerButton, Parent.Height + Parent.Offset.Y - 150);
 
         PlaceData();
     }
@@ -310,9 +327,9 @@ class PagesCanvasGrid : Canvas
                 Canvas.SetTop(_imageHolder, _imageHolder.YPos);
 
                 _yPos += _imageHolder.Height;
-                _imageHolder.IsVisible = true;
 
                 Height = _yPos + (_imageHolder.Height * AfterImagesPadY);
+                ShowOnlyVisibleScreen(Parent.Offset.Y);
             }
         }
 
@@ -320,12 +337,32 @@ class PagesCanvasGrid : Canvas
             Parent.Offset = new Point(0, ScroolBarProggressPrecentage * Height);
         }
 
-        ShowOnlyVisibleScreen(Parent.Offset.Y);
+        
     }
 
     public void ShowOnlyVisibleScreen(double ScrollViwerYOffset)
     {
+        if (ImageHolders == null) return;
 
+        bool _break = false; // this will stop the loop from contunuaning if we detect that any images that comes after the ones we are seeing are not vissable 
+        foreach (var _imageHolder in ImageHolders)
+        {
+            if (_imageHolder == null) return;
+            double _lowerbound = Parent.Offset.Y - _imageHolder.Height;
+            double _upperbound = Parent.Offset.Y + Parent.Height;
+
+            if (_imageHolder.YPos <= _upperbound && _imageHolder.YPos >= _lowerbound)
+            {
+                _imageHolder.IsVisible = true;
+                _break = true;
+            }
+            else{
+                _imageHolder.IsVisible = false;
+                if (_break) {
+                    return; // this will only break when we go from stuff that should be visiable to stuff that are isnt to not was proccessing power
+                }
+            }
+        }
 
     }
 

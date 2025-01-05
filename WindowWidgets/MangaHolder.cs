@@ -1,4 +1,4 @@
-using Avalonia.Controls;
+﻿using Avalonia.Controls;
 using Avalonia.Media;
 using MangaReader;
 using Avalonia;
@@ -29,7 +29,7 @@ class MangaHolder : Canvas
     private Canvas BottomRightCanvas;
     private ChaptersScrollViewer chaptersScrollViewer;
 
-     
+
 
 
     public MangaHolder(MainWindow parentWindow)
@@ -37,10 +37,12 @@ class MangaHolder : Canvas
         Parent = parentWindow;
 
 
-        BackButton = new Button { 
+        BackButton = new Button
+        {
             Content = "<",
             Background = BordersColor,
-            Width = 30, Height = 30,
+            Width = 30,
+            Height = 30,
             ZIndex = 1,
         };
         BackButton.Click += OnClickBackButton;
@@ -50,7 +52,8 @@ class MangaHolder : Canvas
         {
             Content = "BookMark",
             Background = BordersColor,
-            Width = 90, Height = 30,
+            Width = 90,
+            Height = 30,
             ZIndex = 1,
         };
         BookMarkedLoad.Click += OnClickBookMarkedLoad;
@@ -59,7 +62,7 @@ class MangaHolder : Canvas
         LeftCanvasBorders = new Border();
         Children.Add(LeftCanvasBorders);
 
-        
+
 
         LeftCanvas = new Canvas();
         LeftCanvas.ClipToBounds = true;
@@ -136,7 +139,8 @@ class MangaHolder : Canvas
         else BookMarkedLoad.Opacity = 1;
     }
 
-    public void Populate(MangaContent mangaData) { 
+    public void Populate(MangaContent mangaData)
+    {
         MangaData = mangaData;
         // we can now populate the Window
         CoverHolder.Populate(MangaData);
@@ -158,7 +162,8 @@ class MangaHolder : Canvas
         Windows.MasterWindow.Content = Windows.ThirdWindow;
     }
 
-    public void PassContent(WindowsStruct windows) { 
+    public void PassContent(WindowsStruct windows)
+    {
         Windows = windows;
         chaptersScrollViewer.PassContent(windows);
     }
