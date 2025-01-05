@@ -3,6 +3,7 @@ using System.Threading.Tasks;
 using System;
 using System.Diagnostics;
 using Avalonia.Controls;
+using Microsoft.CodeAnalysis.CSharp.Syntax;
 
 
 
@@ -18,7 +19,7 @@ class SmoothScrolling
 
 
     //Handles SmoothScrolling
-    public double ScrollingImpulseSpeed = 1000; //500 pixles/s
+    public double ScrollingImpulseSpeed = 1000; //this will be timesd by avarage scroll impulse which is 50 => 50*20 = 1000 pixles/s 
     public double ScrollingConstantDeacceleration = 2000; //2000 pixles/s
     public double ScrollingMaxVelocity = 1000;
     public double ScrollingTrusholdVelocity = 1000;
@@ -50,7 +51,7 @@ class SmoothScrolling
 
 
         CurrentDirection = -(e.Delta.Y / Math.Abs(e.Delta.Y));
-        CurrentVelocity += Math.Abs(ScrollingImpulseSpeed);
+        CurrentVelocity += Math.Abs(ScrollingImpulseSpeed * e.Delta.Y);
 
         if (!FunctionRunning)
         {

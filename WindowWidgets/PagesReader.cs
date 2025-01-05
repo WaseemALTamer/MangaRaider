@@ -191,6 +191,9 @@ class PagesReader : Canvas
             Windows.MasterWindow.WindowState = WindowState.FullScreen;
         }
 
+        Avalonia.Threading.Dispatcher.UIThread.Post(() => { // this ensure that we set focase on the parent after the avolana thread is excuated
+            pageScrollViwer.ChapterScrollViewer.Focus();
+        });
     }
 
     public void PassContent(WindowsStruct windows)

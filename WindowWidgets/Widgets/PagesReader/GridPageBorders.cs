@@ -23,6 +23,9 @@ class GridPageBorders: Border
 
     public double ImageScaler;
 
+    public double XPos; // those are for the parent to access and check the postion of the oobject
+    public double YPos; // Note that you have to assigne these your self
+
     public GridPageBorders(Canvas parent, string Directory, double Scaler) {
 
 
@@ -42,8 +45,16 @@ class GridPageBorders: Border
             PageWidth = bitmap.PixelSize.Width;
             PageHeight = bitmap.PixelSize.Height;
 
+
+
             Width = Parent.Width;
-            Height = PageHeight * ImageScaler;
+
+            if (Parent.Width < PageWidth * ImageScaler){
+                Height = (Parent.Width / PageWidth) * PageHeight;
+            }
+            else{
+                Height = PageHeight * ImageScaler;
+            }
 
             PageImage = new Image
             {
@@ -71,12 +82,18 @@ class GridPageBorders: Border
     }
 
 
-    private void UpdateWidget()
+    public void UpdateWidget()
     {
 
         VerticalAlignment = Avalonia.Layout.VerticalAlignment.Top;
         Width = Parent.Width;
-        Height = PageHeight * ImageScaler;
+
+        if (Parent.Width < PageWidth * ImageScaler){
+            Height = (Parent.Width / PageWidth) * PageHeight;
+        }
+        else {
+            Height = PageHeight * ImageScaler;
+        }
     }
 
 }
