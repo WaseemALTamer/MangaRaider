@@ -223,11 +223,9 @@ class PagesCanvasGrid : Canvas
         }
 
         if (!LongStrip){
-            ChapterData.CurrentPageNum = 1;
             DisplayPage();
         }
         else{
-            ChapterData.CurrentPageNum = 1;
             DisplayAllPages();
         }
 
