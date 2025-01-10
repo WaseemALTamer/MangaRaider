@@ -12,4 +12,5 @@ class MangaContent
     public int BookMarkedPage;
     public int[] ChaptersRead;
     public Image CoverImage;
+    public string Description;
 }

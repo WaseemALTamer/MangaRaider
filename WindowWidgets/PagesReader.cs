@@ -180,6 +180,11 @@ class PagesReader : Canvas
         }
         Windows.SecondWindow.Populate(MangaData);
         Windows.MasterWindow.Content = Windows.SecondWindow;
+
+
+        pageScrollViwer.CanvasGrid.Children.Clear();
+        pageScrollViwer.CanvasGrid.ImageHolder = default;
+        pageScrollViwer.CanvasGrid.ImageHolders = default;
     }
 
     private void OnClickFullScreenButton(object sender, object e) {

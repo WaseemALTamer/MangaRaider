@@ -20,12 +20,14 @@ class PagesScrollViwer : Panel
     public SolidColorBrush Backgruond = new SolidColorBrush(Color.FromUInt32(0xff000000));
 
 
+
     public Canvas Parent;
     public ScrollViewer ChapterScrollViewer;
 
+    public PagesCanvasGrid CanvasGrid;
 
     private SmoothScrolling SmoothScrollingAnimation;
-    private PagesCanvasGrid CanvasGrid;
+    
 
 
     public PagesScrollViwer(Canvas ParentWindow)

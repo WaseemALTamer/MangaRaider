@@ -4373,11 +4373,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "F:\\Small Projects\\MangaReader\\MangaReader\\MangaReader\\MangaReader.csproj",
+      "projectUniqueName": "F:\\Projects\\MangaReader\\MangaReader\\MangaReader\\MangaReader.csproj",
       "projectName": "MangaReader",
-      "projectPath": "F:\\Small Projects\\MangaReader\\MangaReader\\MangaReader\\MangaReader.csproj",
+      "projectPath": "F:\\Projects\\MangaReader\\MangaReader\\MangaReader\\MangaReader.csproj",
       "packagesPath": "C:\\Users\\wasee\\.nuget\\packages\\",
-      "outputPath": "F:\\Small Projects\\MangaReader\\MangaReader\\MangaReader\\obj\\",
+      "outputPath": "F:\\Projects\\MangaReader\\MangaReader\\MangaReader\\obj\\",
       "projectStyle": "PackageReference",
       "configFilePaths": [
         "C:\\Users\\wasee\\AppData\\Roaming\\NuGet\\NuGet.Config",

@@ -78,6 +78,8 @@ class UniformTransation
 
 
         while (_stopwatch.ElapsedMilliseconds < Duration) {
+
+
             if (_stopwatch.ElapsedMilliseconds - _timeStamp < Tick){
                 await Task.Delay(Tick / 2);
                 continue;

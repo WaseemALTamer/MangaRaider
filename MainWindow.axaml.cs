@@ -86,8 +86,30 @@ namespace MangaReader
                         MangasData[_indexManga].Chapters[_indexChapters] = Int32.Parse(Path.GetFileName(_chapter));
                         _indexChapters += 1;
                     }
-                    
 
+                    //Graps the JsonFile For Names
+                    string _jsonFilePath = $"{_folder}/Data.json";
+                    if (File.Exists(_jsonFilePath))
+                    {
+                        string _jsonContent = File.ReadAllText(_jsonFilePath);
+                        var _data = JsonSerializer.Deserialize<Dictionary<string, JsonElement>>(_jsonContent);
+
+
+
+                        if (_data.ContainsKey("Names"))
+                        {
+                            var _altirnativeNamesArray = _data["Names"].EnumerateArray()
+                                .Select(element => element.GetString()) // Convert each JsonElement to a string
+                                .ToArray(); // Convert to a string array
+
+                            MangasData[_indexManga].AltirnativeNames = _altirnativeNamesArray;
+                            MangasData[_indexManga].MangaName = _altirnativeNamesArray[0];
+                        }
+                        if (_data.ContainsKey("Description"))
+                        {
+                            MangasData[_indexManga].Description = _data["Description"].GetString();
+                        }
+                    }
 
                     //Graps the Image
                     string _imagePath = $"{_folder}/Cover.jpg";
@@ -113,26 +135,7 @@ namespace MangaReader
                         }
                     }
 
-                    //Graps the JsonFile For Names
-                    string _jsonFilePath = $"{_folder}/Data.json";
-                    if (File.Exists(_jsonFilePath))
-                    {
-                        string _jsonContent = File.ReadAllText(_jsonFilePath);
-                        var _data = JsonSerializer.Deserialize<Dictionary<string, JsonElement>>(_jsonContent);
 
-                        if (_data.ContainsKey("s")) {
-                            MangasData[_indexManga].MangaName = _data["s"].GetString();
-                        }
-
-                        if (_data.ContainsKey("a"))
-                        {
-                            var _altirnativeNamesArray = _data["a"].EnumerateArray()
-                                .Select(element => element.GetString()) // Convert each JsonElement to a string
-                                .ToArray(); // Convert to a string array
-
-                            MangasData[_indexManga].AltirnativeNames = _altirnativeNamesArray;
-                        }
-                    }
 
                     //test.Text = $"{MangasData[0].AltirnativeNames[0]}";
 

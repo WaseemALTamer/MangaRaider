@@ -30,8 +30,8 @@ class PagesCanvasGrid : Canvas
 
     public SmoothScrolling SmoothScrollingAnimation;
 
-    private GridPageBorders ImageHolder;
-    private GridPageBorders[] ImageHolders; // this is for the long strip
+    public GridPageBorders ImageHolder;
+    public GridPageBorders[] ImageHolders; // this is for the long strip
 
     private double ImageScaler = 1;
 
@@ -108,6 +108,8 @@ class PagesCanvasGrid : Canvas
         Parent.PropertyChanged += OnPropertyChanged;
         Parent.PointerReleased += OnClickRelase;
     }
+
+
 
     private void OnPropertyChanged(object sender, object e)
     {
@@ -290,11 +292,13 @@ class PagesCanvasGrid : Canvas
         ImageHolders = new GridPageBorders[ChapterData.NumberOfPages];
 
         for (int i = 0; i < ChapterData.NumberOfPages; i++) {
-            if (LongStrip == false) return;
+            if (LongStrip == false || ImageHolders == null) return;
+
+
             ImageHolders[i] = new GridPageBorders(this, ChapterData.Path + $@"\{i + 1}.png", ImageScaler);
             ImageHolders[i].IsVisible = false;
             PlaceData();
-            await Task.Delay(10); // we can await delay to leave other operations to run perfectly
+            await Task.Delay(20); // we can await delay to leave other operations to run perfectly
         }
 
         Avalonia.Threading.Dispatcher.UIThread.Post(() => { // this ensure that we set focase on the parent after the avolana thread is excuated
