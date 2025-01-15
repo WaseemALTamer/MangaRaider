@@ -335,6 +335,19 @@
           }
         }
       },
+      "Fastenshtein/1.0.10": {
+        "type": "package",
+        "compile": {
+          "lib/net8.0/Fastenshtein.dll": {
+            "related": ".xml"
+          }
+        },
+        "runtime": {
+          "lib/net8.0/Fastenshtein.dll": {
+            "related": ".xml"
+          }
+        }
+      },
       "HarfBuzzSharp/7.3.0": {
         "type": "package",
         "dependencies": {
@@ -1751,6 +1764,27 @@
         "lib/net6.0/Avalonia.X11.xml",
         "lib/netstandard2.0/Avalonia.X11.dll",
         "lib/netstandard2.0/Avalonia.X11.xml"
+      ]
+    },
+    "Fastenshtein/1.0.10": {
+      "sha512": "fZ5DKypgdTkwfchV4fZ5OFFGYu49B8YbUMr6hN6Azl7IziIsyKARqdU3EZt/oQJyV71eQxpY9jL2J1tXb2gvlQ==",
+      "type": "package",
+      "path": "fastenshtein/1.0.10",
+      "files": [
+        ".nupkg.metadata",
+        ".signature.p7s",
+        "LICENSE",
+        "fastenshtein.1.0.10.nupkg.sha512",
+        "fastenshtein.nuspec",
+        "lib/net452/Fastenshtein.dll",
+        "lib/net452/Fastenshtein.xml",
+        "lib/net8.0/Fastenshtein.dll",
+        "lib/net8.0/Fastenshtein.xml",
+        "lib/netstandard1.0/Fastenshtein.dll",
+        "lib/netstandard1.0/Fastenshtein.xml",
+        "lib/netstandard2.0/Fastenshtein.dll",
+        "lib/netstandard2.0/Fastenshtein.xml",
+        "nuget-readme.md"
       ]
     },
     "HarfBuzzSharp/7.3.0": {
@@ -4360,11 +4394,11 @@
   },
   "projectFileDependencyGroups": {
     "net8.0": [
-      "Avalonia >= 11.0.10",
       "Avalonia.Desktop >= 11.0.10",
       "Avalonia.Diagnostics >= 11.0.10",
       "Avalonia.Fonts.Inter >= 11.0.10",
-      "Avalonia.Themes.Fluent >= 11.0.10"
+      "Avalonia.Themes.Fluent >= 11.0.10",
+      "Fastenshtein >= 1.0.10"
     ]
   },
   "packageFolders": {
@@ -4411,10 +4445,6 @@
       "net8.0": {
         "targetAlias": "net8.0",
         "dependencies": {
-          "Avalonia": {
-            "target": "Package",
-            "version": "[11.0.10, )"
-          },
           "Avalonia.Desktop": {
             "target": "Package",
             "version": "[11.0.10, )"
@@ -4430,6 +4460,10 @@
           "Avalonia.Themes.Fluent": {
             "target": "Package",
             "version": "[11.0.10, )"
+          },
+          "Fastenshtein": {
+            "target": "Package",
+            "version": "[1.0.10, )"
           }
         },
         "imports": [

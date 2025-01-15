@@ -1,8 +1,11 @@
-using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Input;
 using Avalonia.Media;
+using Avalonia;
 using System;
+using Avalonia.LogicalTree;
+using Avalonia.Interactivity;
+
 
 
 
@@ -26,6 +29,8 @@ class GridMangaCoverBorder : Border
 
     private UniformTransation ImageTransation;
     private UniformTransation TextTransation;
+
+    private ContextMenu contextMenu;
 
 
     public GridMangaCoverBorder(MangaContent mangaData, WindowsStruct window)
@@ -103,12 +108,31 @@ class GridMangaCoverBorder : Border
 
         PointerEntered += TextTransation.TranslateForward;
         PointerExited += TextTransation.TranslateBackward;
-
-
         PointerReleased += OnClickRelase;
-
-
         AttachedToVisualTree += OnDisplay;
+
+
+        contextMenu = new ContextMenu();
+        var menuItemDetails = new MenuItem
+        {
+            Header = "Copy Name",
+        };
+        menuItemDetails.Click += OnClickCopyName;
+
+
+        contextMenu.ItemsSource = new[]
+        {
+            menuItemDetails
+        };
+
+        // Assign the context menu to the control
+        ContextMenu = contextMenu;
+
+
+
+        ContextMenu = contextMenu;
+
+
 
         Child = ImageBorders;
 
@@ -142,7 +166,7 @@ class GridMangaCoverBorder : Border
         Background = new SolidColorBrush(Color.FromUInt32(Backgruond));
     }
 
-    private void ImageTransationTrigger(double Value) { 
+    private void ImageTransationTrigger(double Value) {
         CoverImageHolder.RenderTransform = new ScaleTransform(Value, Value);
     }
 
@@ -173,5 +197,14 @@ class GridMangaCoverBorder : Border
                 Windows.MasterWindow.Content = Windows.SecondWindow;
             }
         }
+    }
+
+
+    private async void OnClickCopyName(object? sender, RoutedEventArgs args)
+    {
+        var clipboard = TopLevel.GetTopLevel(this)?.Clipboard;
+        var dataObject = new DataObject();
+        dataObject.Set(DataFormats.Text, MangaNameBlock.Text);
+        await clipboard.SetDataObjectAsync(dataObject);
     }
 }

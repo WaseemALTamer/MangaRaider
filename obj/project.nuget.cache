@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "dgSpecHash": "6FFLN5m93oQ=",
+  "dgSpecHash": "0gRcPT+foUg=",
   "success": true,
   "projectFilePath": "F:\\Projects\\MangaReader\\MangaReader\\MangaReader\\MangaReader.csproj",
   "expectedPackageFiles": [
@@ -20,6 +20,7 @@
     "C:\\Users\\wasee\\.nuget\\packages\\avalonia.themes.simple\\11.0.10\\avalonia.themes.simple.11.0.10.nupkg.sha512",
     "C:\\Users\\wasee\\.nuget\\packages\\avalonia.win32\\11.0.10\\avalonia.win32.11.0.10.nupkg.sha512",
     "C:\\Users\\wasee\\.nuget\\packages\\avalonia.x11\\11.0.10\\avalonia.x11.11.0.10.nupkg.sha512",
+    "C:\\Users\\wasee\\.nuget\\packages\\fastenshtein\\1.0.10\\fastenshtein.1.0.10.nupkg.sha512",
     "C:\\Users\\wasee\\.nuget\\packages\\harfbuzzsharp\\7.3.0\\harfbuzzsharp.7.3.0.nupkg.sha512",
     "C:\\Users\\wasee\\.nuget\\packages\\harfbuzzsharp.nativeassets.linux\\7.3.0\\harfbuzzsharp.nativeassets.linux.7.3.0.nupkg.sha512",
     "C:\\Users\\wasee\\.nuget\\packages\\harfbuzzsharp.nativeassets.macos\\7.3.0\\harfbuzzsharp.nativeassets.macos.7.3.0.nupkg.sha512",

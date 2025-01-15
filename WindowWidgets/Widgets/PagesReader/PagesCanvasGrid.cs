@@ -270,6 +270,7 @@ class PagesCanvasGrid : Canvas
         ImageHolder = new GridPageBorders(this, ChapterData.Path + $@"\{ChapterData.CurrentPageNum}.png", ImageScaler);
         SmoothScrollingAnimation.StopCurrentAnimation = true; // stop the scroll bar from going forward and set velocity to zero
         Parent.Offset = new Point(0, 0); // reset the scrollbar progress
+        ImageHolder.IsVisible = true;
 
         PlaceData();
         Avalonia.Threading.Dispatcher.UIThread.Post(() =>{ // this ensure that we set focase on the parent after the avolana thread is excuated

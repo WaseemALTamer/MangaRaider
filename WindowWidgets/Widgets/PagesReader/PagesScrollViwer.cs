@@ -63,8 +63,7 @@ class PagesScrollViwer : Panel
 
 
         AttachedToVisualTree += OnDisplay;
-        Parent.PropertyChanged += OnPropertyChanged;
-        ChapterScrollViewer.PropertyChanged += OnPropertyChanged;
+        Parent.SizeChanged += OnPropertyChanged;
         ClipToBounds = true;
     }
 

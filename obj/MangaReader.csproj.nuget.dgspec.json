@@ -45,10 +45,6 @@
         "net8.0": {
           "targetAlias": "net8.0",
           "dependencies": {
-            "Avalonia": {
-              "target": "Package",
-              "version": "[11.0.10, )"
-            },
             "Avalonia.Desktop": {
               "target": "Package",
               "version": "[11.0.10, )"
@@ -64,6 +60,10 @@
             "Avalonia.Themes.Fluent": {
               "target": "Package",
               "version": "[11.0.10, )"
+            },
+            "Fastenshtein": {
+              "target": "Package",
+              "version": "[1.0.10, )"
             }
           },
           "imports": [

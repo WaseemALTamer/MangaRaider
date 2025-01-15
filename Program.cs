@@ -18,5 +18,6 @@ namespace MangaReader
                 .UsePlatformDetect()
                 .WithInterFont()
                 .LogToTrace();
+                
     }
 }

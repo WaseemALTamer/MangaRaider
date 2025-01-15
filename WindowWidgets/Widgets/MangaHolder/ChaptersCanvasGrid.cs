@@ -62,7 +62,7 @@ class ChaptersCanvasGrid : Canvas
 
         MangaData = mangaData;
 
-        if (ChaptersBorders != null) { // 
+        if (ChaptersBorders != null) {
             Children.Clear();
         }
 

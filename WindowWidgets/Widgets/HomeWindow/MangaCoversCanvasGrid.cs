@@ -75,7 +75,9 @@ class MangaCoversCanvasGrid : Canvas
 
     }
 
-    private GridMangaCoverBorder[] MangasCovers; // create the ImagesCover array
+    public GridMangaCoverBorder[] MangasCovers; // create the ImagesCover array
+    public GridMangaCoverBorder[] VisableCovers;
+
 
     private void UpdateGrid(object sender, object e) {
 
@@ -87,12 +89,8 @@ class MangaCoversCanvasGrid : Canvas
 
             if (MangasCovers == null || MangasCovers.Length != MangasData.Length)
             {
-
-
-
                 Children.Clear(); // clear the array so the grabage collector can remove the covers
                 MangasCovers = new GridMangaCoverBorder[MangasData.Length];
-                
             }
 
 
@@ -126,21 +124,60 @@ class MangaCoversCanvasGrid : Canvas
         // Only update placement if necessary
         if (UpdatePlacement)
         {
+            ShowAllCovers();
             PlaceCovers();
         }
     }
 
 
-    void PlaceCovers() {
+    public void ClearVisiableCovers() { // this function will not delet the child from the parent rather it will only make it invisable
+                                 // and remove it from the array which objects are made visible  this  also  insure  that  other
+                                 // objects take its place
 
-        if (MangasCovers == null) return;
+        if (VisableCovers != null)
+        {
+            for (int i = 0; i < VisableCovers.Length; i++)
+            {
+                if (VisableCovers[i] == null) break;
+                VisableCovers[i].IsVisible = false;
+            }
+        }
+         VisableCovers = new GridMangaCoverBorder[MangasCovers.Length];
+    }
+
+    public void ShowAllCovers()
+    {
+
+        ClearVisiableCovers();
 
 
+        int VisibleIndex = 0; // this will insure that if a show is not visible other show cover takes its place
 
         for (int i = 0; i < MangasCovers.Length; i++)
         {
+            if (MangasCovers[i] != null)
+            {
+                VisableCovers[i - VisibleIndex] = MangasCovers[i]; // Move the refrence to the Visable array so they get displayed
+            }
+            else VisibleIndex += 1; 
+        }
 
-            var Cover = MangasCovers[i];
+        PlaceCovers();
+
+    }
+
+    public void PlaceCovers() {
+
+        
+        if (VisableCovers == null) return;
+
+
+        Height = 0;
+        for (int i = 0; i < VisableCovers.Length; i++)
+        {
+            if (VisableCovers[i] == null) continue;
+
+            var Cover = VisableCovers[i];
             
             if (Cover != null) {
                 double _ColumnsNum = Math.Floor(Width / (Cover.Width + PadX));
@@ -167,13 +204,13 @@ class MangaCoversCanvasGrid : Canvas
     public void ShowOnlyVisibleScreen(double ScrollViwerYOffset)
     {
 
-        if (MangasCovers == null) return;
+        if (VisableCovers == null) return;
 
-        for (int i = 0; i < MangasCovers.Length; i++)
+        for (int i = 0; i < VisableCovers.Length; i++)
         {
 
-            var Cover = MangasCovers[i];
-            if (Cover == null) continue;
+            var Cover = VisableCovers[i];
+            if (Cover == null) return;
 
             double _LowerBounds = ScrollViwerYOffset - Cover.BHeight;
             double _UpperBounds = ScrollViwerYOffset + Parent.Height;
@@ -190,11 +227,11 @@ class MangaCoversCanvasGrid : Canvas
 
             if (_PosY >= _LowerBounds && _PosY <= _UpperBounds)
             {
-                MangasCovers[i].IsVisible = true;
+                VisableCovers[i].IsVisible = true;
             }
             else
             {
-                MangasCovers[i].IsVisible = false;
+                VisableCovers[i].IsVisible = false;
             }
         }
     }

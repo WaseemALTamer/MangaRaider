@@ -36,6 +36,7 @@ class GridPageBorders: Border
         Parent.Children.Add(this);
 
         IsHitTestVisible = false;
+        IsVisible = false;
 
 
         using (var stream = File.OpenRead(Directory)) // we use the "using" so memory leaks does not occure
@@ -95,5 +96,4 @@ class GridPageBorders: Border
             Height = PageHeight * ImageScaler;
         }
     }
-
 }

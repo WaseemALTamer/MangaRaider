@@ -250,3 +250,4 @@ F:\Projects\MangaReader\MangaReader\MangaReader\obj\Debug\net8.0\MangaReader.pdb
 F:\Projects\MangaReader\MangaReader\MangaReader\obj\Debug\net8.0\MangaRea.9BAA37C0.Up2Date
 F:\Projects\MangaReader\MangaReader\MangaReader\obj\Debug\net8.0\MangaReader.genruntimeconfig.cache
 F:\Projects\MangaReader\MangaReader\MangaReader\obj\Debug\net8.0\ref\MangaReader.dll
+F:\Projects\MangaReader\MangaReader\MangaReader\bin\Debug\net8.0\Fastenshtein.dll

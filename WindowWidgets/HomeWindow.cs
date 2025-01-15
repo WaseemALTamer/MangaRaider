@@ -14,7 +14,9 @@ class HomeWindow : Canvas
 
 
     public MainWindow Parent;
+
     private MangaCoversScrollViewer MangaScrollViewerWidget;
+    private MangaContentSearcher MangaSearcher;
 
     public HomeWindow(MainWindow parentWindow)
     {
@@ -23,7 +25,17 @@ class HomeWindow : Canvas
 
         //Creates the Manga Holder
         MangaScrollViewerWidget = new MangaCoversScrollViewer(this);
+        MangaSearcher = new MangaContentSearcher(this);
 
+        MangaSearcher.MangaCoversGrid = MangaScrollViewerWidget.MangaGrid;
+
+        MangaScrollViewerWidget.Focusable = true;
+        MangaSearcher.Focusable = true;
+
+
+        MangaScrollViewerWidget.PointerPressed += OnClick;
+        MangaSearcher.PointerPressed += OnClick;
+        
 
         AttachedToVisualTree += OnDisplay;
         Parent.SizeChanged += OnResize;
@@ -47,6 +59,25 @@ class HomeWindow : Canvas
         MangaScrollViewerWidget.Height = Height;
 
         Background = new SolidColorBrush(Color.FromUInt32(Backgruond));
+    }
+
+    private void OnClick(object sender, object e) {
+
+        if (sender is MangaCoversScrollViewer MangaSearcher)
+        {
+            if (MangaSearcher.Focusable)
+            {
+                MangaSearcher.Focus();
+            }
+        }
+
+        if (sender is MangaCoversScrollViewer MangaScrollViewerWidget)
+        {
+            if (MangaScrollViewerWidget.Focusable)
+            {
+                MangaScrollViewerWidget.Focus();
+            }
+        }
     }
 
     public void PassContent(MangaContent[] mangasData, WindowsStruct WindowData)
