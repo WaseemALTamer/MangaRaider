@@ -279,9 +279,8 @@ class GridMangaCoverBorder : Border
             else {
                 Array.Resize(ref MangaData.Tags, MangaData.Tags.Length + 1);
                 MangaData.Tags[^1] = "Pined";
-                PinnedImage.Source = Windows.Assets.PinActive;
             }
-
+            PinnedImage.Source = Windows.Assets.PinActive;
             MenuItemPins.Header = "UnPin";
         }
         else{
