@@ -31,6 +31,8 @@ namespace MangaReader
         {
             Windows.MasterWindow = this;
 
+            Windows.Assets = new AssetsLoader();
+
             Windows.FirstWindow = new HomeWindow(this);
             Windows.SecondWindow = new MangaHolder(this);
             Windows.ThirdWindow = new PagesReader(this);
@@ -157,13 +159,22 @@ namespace MangaReader
                             MangasData[_indexManga].BookMarkedPage = _data["Page"].GetInt32();
                         }
 
-                        if (_data.ContainsKey("ReadChapters"))
+                        if (_data.ContainsKey("ReadChapters") && _data["ReadChapters"].ValueKind == JsonValueKind.Array)
                         {
                             var _readChapters = _data["ReadChapters"].EnumerateArray()
                                 .Select(element => element.GetInt32())
                                 .ToArray();
 
                             MangasData[_indexManga].ChaptersRead = _readChapters;
+                        }
+
+                        if (_data.ContainsKey("Tags") && _data["Tags"].ValueKind == JsonValueKind.Array)
+                        {
+                            var _tags = _data["Tags"].EnumerateArray()
+                                .Select(element => element.GetString()) // Convert each JsonElement to a string
+                                .ToArray(); // Convert to a string array
+
+                            MangasData[_indexManga].Tags = _tags;
                         }
                     }
 

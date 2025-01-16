@@ -11,6 +11,7 @@ using System.Reflection;
 using Fastenshtein;
 using System.Collections;
 using System.Linq;
+using Avalonia.Controls.Primitives;
 
 
 class MangaContentSearcher : Canvas
@@ -21,6 +22,7 @@ class MangaContentSearcher : Canvas
     public SolidColorBrush GreyTextBackground = new SolidColorBrush(Color.FromUInt32(0xff929292));
     public SolidColorBrush NormalTextBackground = new SolidColorBrush(Color.FromUInt32(0xffffffff));
 
+    public SolidColorBrush PinnedButtonBackground = new SolidColorBrush(Color.FromUInt32(0xff2e2e2e));
 
     public Canvas Parent;
     
@@ -29,6 +31,7 @@ class MangaContentSearcher : Canvas
     public WindowsStruct Windows;
 
     public TextBox SearchBar;
+    public ToggleButton PinToggleButton;
 
 
 
@@ -40,19 +43,31 @@ class MangaContentSearcher : Canvas
 
         Background = Backgruond;
 
+        PinToggleButton = new ToggleButton
+        {
+            Content = "Show Pined",
+            Background = PinnedButtonBackground,
+            Height = 30,
+        };
+        Children.Add(PinToggleButton);
+        PinToggleButton.Click += OnClickPinToggleButton;
+
         SearchBar = new TextBox {
             Watermark = "Search",
             Foreground = GreyTextBackground,
             Width = 250,
             Height = 30,
         };
-
         Children.Add(SearchBar);
-
-
         SearchBar.GotFocus += OnGetFocus;
         SearchBar.LostFocus += OnLossFocus;
         SearchBar.TextChanged += OnType;
+
+
+
+
+        
+
 
 
         ClipToBounds = true;
@@ -82,9 +97,11 @@ class MangaContentSearcher : Canvas
         if (Width * 0.30 <= SearchBar.Width) {
             Canvas.SetLeft(SearchBar, Width - SearchBar.Width);
         }
-
         Canvas.SetTop(SearchBar, Height * 0.2);
 
+
+        Canvas.SetLeft(PinToggleButton, 20);
+        Canvas.SetTop(PinToggleButton, (Height - PinToggleButton.Height)/2);
 
 
         Width = Parent.Width * 0.95;
@@ -98,6 +115,24 @@ class MangaContentSearcher : Canvas
 
     private void OnLossFocus(object sender, object e){
         SearchBar.Foreground = GreyTextBackground;
+    }
+
+    private void OnClickPinToggleButton(object sender, object e) {
+        
+        if (PinToggleButton.IsChecked == false) {
+            MangaCoversGrid.ShowAllCovers();
+            return;
+        } 
+
+        MangaCoversGrid.ClearVisiableCovers();
+        var _lostIndex = 0; // this index is subtracted from the i index to give the next element that is null rather than skip elemetns that are null
+        for (int i = 0; i < MangaCoversGrid.MangasData.Length; i++){
+            if (MangaCoversGrid.MangasData[i].Tags != null && MangaCoversGrid.MangasData[i].Tags.Contains("Pined")){
+                MangaCoversGrid.VisableCovers[i - _lostIndex] = MangaCoversGrid.MangasCovers[i];
+            }
+            else _lostIndex += 1;
+        }
+        MangaCoversGrid.PlaceCovers();
     }
 
 

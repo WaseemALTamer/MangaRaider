@@ -59,7 +59,8 @@ class ChapterContent{
         {
             Chapter = MangaData.BookMarkedChapter,
             Page = MangaData.BookMarkedPage,
-            ReadChapters = MangaData.ChaptersRead
+            ReadChapters = MangaData.ChaptersRead,
+            Tags = MangaData.Tags
         };
 
         string jsonString = JsonSerializer.Serialize(bookmarkData, new JsonSerializerOptions { WriteIndented = true });

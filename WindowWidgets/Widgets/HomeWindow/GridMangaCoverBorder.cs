@@ -5,6 +5,10 @@ using Avalonia;
 using System;
 using Avalonia.LogicalTree;
 using Avalonia.Interactivity;
+using Avalonia.Media.Imaging;
+using System.Linq;
+using Microsoft.VisualBasic;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 
 
@@ -12,7 +16,7 @@ using Avalonia.Interactivity;
 class GridMangaCoverBorder : Border
 {
 
-    public UInt32 Backgruond = 0xff000000;
+    public SolidColorBrush Backgruond = new SolidColorBrush(Color.FromUInt32(0xff000000));
     public MangaContent MangaData;
     public WindowsStruct Windows;
 
@@ -30,7 +34,16 @@ class GridMangaCoverBorder : Border
     private UniformTransation ImageTransation;
     private UniformTransation TextTransation;
 
+
+    private SolidColorBrush PinnedImageBackground = new SolidColorBrush(Color.FromUInt32(0x99000000));
+    private Border PinnedBorder;
+    private Image PinnedImage;
+
+
+
     private ContextMenu contextMenu;
+    private MenuItem MenuItemCopy = new MenuItem{Header = "Copy Name"};
+    private MenuItem MenuItemPins = new MenuItem { Header = "Pin" };
 
 
     public GridMangaCoverBorder(MangaContent mangaData, WindowsStruct window)
@@ -40,18 +53,13 @@ class GridMangaCoverBorder : Border
         //You shuold Manually add it to to the parent and also it is recomended to add it to the Parent varable "Parent"
 
         ImageBorders = new Canvas();
-
         CoverImageHolder = new Panel();
-        
-
         // we create a copy of the image and then add it
         CoverImageCopy = new Image { 
             Source = MangaData.CoverImage.Source,
             Stretch = Stretch.Fill,
         };
         CoverImageHolder.Children.Add(CoverImageCopy); // Add Image
-        
-        
         ImageBorders.Children.Add(CoverImageHolder);
 
 
@@ -112,31 +120,57 @@ class GridMangaCoverBorder : Border
         AttachedToVisualTree += OnDisplay;
 
 
-        contextMenu = new ContextMenu();
-        var menuItemDetails = new MenuItem
-        {
-            Header = "Copy Name",
+
+
+
+
+        // this (PinnedBorder) will be mapped to the same animation to the Text when it pops up as it uses values from
+        // 0-1 at the same time that i will use it to show this
+        PinnedBorder = new Border { 
+            Width = 40,
+            Height = 40,
+            CornerRadius = new CornerRadius(10),
+            Background = PinnedImageBackground,
+            IsHitTestVisible = true,
         };
-        menuItemDetails.Click += OnClickCopyName;
+        ImageBorders.Children.Add(PinnedBorder);
+        PinnedBorder.PointerReleased += OnClickRealsePin;
 
 
+        PinnedImage = new Image
+        {
+            Stretch = Avalonia.Media.Stretch.Uniform,
+            Focusable = true,
+            IsHitTestVisible = true,
+        };  
+
+        PinnedBorder.Child = PinnedImage;
+
+        contextMenu = new ContextMenu();
         contextMenu.ItemsSource = new[]
         {
-            menuItemDetails
+            MenuItemCopy,
+            MenuItemPins,
         };
 
-        // Assign the context menu to the control
+
+        MenuItemCopy.Click += OnClickCopyName;
+        MenuItemPins.Click += OnClickPins;
         ContextMenu = contextMenu;
 
-
-
-        ContextMenu = contextMenu;
-
+        if (MangaData.Tags != null && MangaData.Tags.Contains("Pined"))
+        {
+            MenuItemPins.Header = "UnPin";
+            PinnedImage.Source = Windows.Assets.PinActive;
+            PinnedBorder.Opacity = 1;
+        }
+        else {
+            PinnedImage.Source = Windows.Assets.PinUnActive;
+            PinnedBorder.Opacity = 0;
+        }
 
 
         Child = ImageBorders;
-
-
         ImageBorders.ClipToBounds = true;
         ClipToBounds = true;
     }
@@ -163,7 +197,13 @@ class GridMangaCoverBorder : Border
         MangaNameBlock.Width = BWidth;
         Canvas.SetTop(MangaNameBlock, ImageBorders.Height);
 
-        Background = new SolidColorBrush(Color.FromUInt32(Backgruond));
+
+        Canvas.SetTop(PinnedBorder, 10);
+        Canvas.SetLeft(PinnedBorder, 10);
+        
+
+
+        Background = Backgruond;
     }
 
     private void ImageTransationTrigger(double Value) {
@@ -172,9 +212,30 @@ class GridMangaCoverBorder : Border
 
     private void TextTransationTrigger(double Value){
         Canvas.SetTop(MangaNameBlock, ImageBorders.Height - (MangaNameBlock.Height*Value));
+
+
+        if (MangaData.Tags == null || !MangaData.Tags.Contains("Pined"))
+        {
+            PinnedBorder.Opacity = Value;
+        }
     }
 
 
+    private void OnClickRealsePin(object sender, PointerReleasedEventArgs e) {
+        
+        e.Handled = true;
+
+        if (e.GetCurrentPoint(null).Properties.PointerUpdateKind == PointerUpdateKind.LeftButtonReleased)
+        {
+            if (sender is Control control)
+            {
+                var pointerPosition = e.GetPosition(control);
+                if (pointerPosition.X < 0 || pointerPosition.Y < 0) return;
+                if (pointerPosition.X > PinnedBorder.Width || pointerPosition.Y > PinnedBorder.Height) return;
+                OnClickPins(null, null);
+            }
+        }
+    }
 
 
 
@@ -206,5 +267,34 @@ class GridMangaCoverBorder : Border
         var dataObject = new DataObject();
         dataObject.Set(DataFormats.Text, MangaNameBlock.Text);
         await clipboard.SetDataObjectAsync(dataObject);
+    }
+
+    private async void OnClickPins(object? sender, RoutedEventArgs args)
+    {
+        if (MangaData.Tags == null || !MangaData.Tags.Contains("Pined")) {
+            if (MangaData.Tags == null)
+            {
+                MangaData.Tags = new string[] { "Pined" };
+            }
+            else {
+                Array.Resize(ref MangaData.Tags, MangaData.Tags.Length + 1);
+                MangaData.Tags[^1] = "Pined";
+                PinnedImage.Source = Windows.Assets.PinActive;
+            }
+
+            MenuItemPins.Header = "UnPin";
+        }
+        else{
+            MangaData.Tags = MangaData.Tags.Where(s => s != "Pined").ToArray();
+            MenuItemPins.Header = "Pin";
+            PinnedImage.Source = Windows.Assets.PinUnActive;
+        }
+
+
+        // write data on disk
+        var _object = new ChapterContent();
+        _object.MangaData = MangaData;
+        _object.WriteDataToDisk();
+
     }
 }
