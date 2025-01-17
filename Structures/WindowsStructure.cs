@@ -3,7 +3,7 @@
 
 class WindowsStruct //this will be passed throughout the widgets
 {
-    public MangaReader.MainWindow MasterWindow;
+    public MangaRaider.MainWindow MasterWindow;
     public HomeWindow FirstWindow;
     public MangaHolder SecondWindow;
     public PagesReader ThirdWindow;

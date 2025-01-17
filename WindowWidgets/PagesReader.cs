@@ -1,6 +1,6 @@
 ﻿using Avalonia.Controls;
 using Avalonia.Media;
-using MangaReader;
+using MangaRaider;
 using Avalonia;
 using System;
 using System.IO;

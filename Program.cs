@@ -1,7 +1,7 @@
 ﻿using Avalonia;
 using System;
 
-namespace MangaReader
+namespace MangaRaider
 {
     internal class Program
     {

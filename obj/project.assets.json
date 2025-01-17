@@ -4407,9 +4407,9 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "F:\\Projects\\MangaReader\\MangaReader\\MangaReader\\MangaReader.csproj",
-      "projectName": "MangaReader",
-      "projectPath": "F:\\Projects\\MangaReader\\MangaReader\\MangaReader\\MangaReader.csproj",
+      "projectUniqueName": "F:\\Projects\\MangaReader\\MangaReader\\MangaReader\\MangaRaider.csproj",
+      "projectName": "MangaRaider",
+      "projectPath": "F:\\Projects\\MangaReader\\MangaReader\\MangaReader\\MangaRaider.csproj",
       "packagesPath": "C:\\Users\\wasee\\.nuget\\packages\\",
       "outputPath": "F:\\Projects\\MangaReader\\MangaReader\\MangaReader\\obj\\",
       "projectStyle": "PackageReference",

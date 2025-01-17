@@ -254,3 +254,8 @@ F:\Projects\MangaReader\MangaReader\MangaReader\bin\Debug\net8.0\Fastenshtein.dl
 F:\Projects\MangaReader\MangaReader\MangaReader\bin\Debug\net8.0\MangasDir.txt
 F:\Projects\MangaReader\MangaReader\MangaReader\bin\Debug\net8.0\Assets\Images\InvisibleStar.png
 F:\Projects\MangaReader\MangaReader\MangaReader\bin\Debug\net8.0\Assets\Images\VisableStar.png
+F:\Projects\MangaReader\MangaReader\MangaReader\bin\Debug\net8.0\Assets\Icons\MangaSee123.png
+F:\Projects\MangaReader\MangaReader\MangaReader\bin\Debug\net8.0\Assets\Icons\MangaSee123.ico
+F:\Projects\MangaReader\MangaReader\MangaReader\bin\Debug\net8.0\Assets\Icons\MangaRaider.png
+F:\Projects\MangaReader\MangaReader\MangaReader\bin\Debug\net8.0\Assets\Icons\MangaRaider.psd
+F:\Projects\MangaReader\MangaReader\MangaReader\bin\Debug\net8.0\Assets\Icons\MangaRaider.ico

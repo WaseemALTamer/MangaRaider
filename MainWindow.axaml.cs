@@ -12,12 +12,13 @@ using Avalonia.Animation;
 
 
 
-namespace MangaReader
+namespace MangaRaider
 {
     public partial class MainWindow : Window
     {
 
-        string MangaDirecotryFileName = "MangasDir.txt";
+        string MangaDirecotryFileName = @"MangasDir.txt";
+        string MangaDirecotryIcon = @"Assets\Icons\MangaRaider.Ico";
         
         WindowsStruct Windows = new WindowsStruct();
         MangaContent[] MangasData;
@@ -30,6 +31,8 @@ namespace MangaReader
         private void OnLoaded(object sender, Avalonia.Interactivity.RoutedEventArgs e)
         {
             Windows.MasterWindow = this;
+            Icon = new WindowIcon(MangaDirecotryIcon);
+
 
             Windows.Assets = new AssetsLoader();
 
