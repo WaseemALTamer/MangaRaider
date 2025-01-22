@@ -70,8 +70,8 @@ class ChaptersCanvasGrid : Canvas
 
         for (int i = 0; i < ChaptersBorders.Length; i++)
         {
-            ChaptersBorders[i] = new GridChaptersBorder(this, Windows, MangaData, MangaData.Chapters[i]);
-            ChaptersBorders[i].IsVisible = false;
+            ChaptersBorders[(ChaptersBorders.Length - 1) - i] = new GridChaptersBorder(this, Windows, MangaData, MangaData.Chapters[i]);
+            ChaptersBorders[(ChaptersBorders.Length - 1) - i].IsVisible = false;
         }
         PlaceData();
     }

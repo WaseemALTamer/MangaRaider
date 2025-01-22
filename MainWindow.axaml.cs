@@ -9,6 +9,8 @@ using System;
 using Avalonia.Threading;
 using System.Threading;
 using Avalonia.Animation;
+using static System.Runtime.InteropServices.JavaScript.JSType;
+using Microsoft.CodeAnalysis.Scripting.Hosting;
 
 
 
@@ -64,9 +66,10 @@ namespace MangaRaider
                 }
             }
 
-                
 
-            if (Directory.Exists(directoryPath)){
+
+            if (Directory.Exists(directoryPath))
+            {
                 //Graps all the folers
                 string[] Folders = Directory.GetDirectories(directoryPath);
                 MangasData = new MangaContent[Folders.Length];
@@ -75,7 +78,8 @@ namespace MangaRaider
 
 
                 int _indexManga = 0;
-                foreach (string _folder in Folders) {
+                foreach (string _folder in Folders)
+                {
                     MangasData[_indexManga] = new MangaContent();
                     MangasData[_indexManga].FolderName = Path.GetFileName(_folder);
                     MangasData[_indexManga].Path = _folder;
@@ -87,7 +91,8 @@ namespace MangaRaider
 
                     //Append the Chapters
                     int _indexChapters = 0;
-                    foreach (string _chapter in _chaptersDir) {
+                    foreach (string _chapter in _chaptersDir)
+                    {
                         MangasData[_indexManga].Chapters[_indexChapters] = Int32.Parse(Path.GetFileName(_chapter));
                         _indexChapters += 1;
                     }
@@ -109,42 +114,79 @@ namespace MangaRaider
 
                             MangasData[_indexManga].AltirnativeNames = _altirnativeNamesArray;
                             MangasData[_indexManga].MangaName = _altirnativeNamesArray[0];
+
+                            
                         }
                         if (_data.ContainsKey("Description"))
                         {
                             MangasData[_indexManga].Description = _data["Description"].GetString();
                         }
-                    }
-
-                    //Graps the Image
-                    string _imagePath = $"{_folder}/Cover.jpg";
-                    if (File.Exists(_imagePath))
-                    {
-                        using (var stream = File.OpenRead(_imagePath)) // we use the "using" so memory leaks does not occure
+                        if (_data.ContainsKey("LastUpdate"))
                         {
-                            Bitmap bitmap = new Bitmap(stream);
-
-                            int _localIndex = _indexManga;
-                            Dispatcher.UIThread.InvokeAsync(() =>
-                            {
-                                
-                                Image imageControl = new Image
-                                {
-                                    Source = bitmap,
-                                    Stretch = Avalonia.Media.Stretch.Fill
-                                };
-                                MangasData[_localIndex].CoverImage = imageControl;
-                            });
-
-                            
+                            MangasData[_indexManga].LastUpdate = _data["LastUpdate"].GetString();
                         }
+
+                        if (_data.ContainsKey("Chapters"))
+                        {
+                            var chaptersList = new List<Chapter>();
+                            foreach (var chapterElement in _data["Chapters"].EnumerateArray())
+                            {
+                                var chapterDict = JsonSerializer.Deserialize<Dictionary<string, JsonElement>>(chapterElement.GetRawText());
+                                var chapter = new Chapter();
+
+                                chapter.ChapterID = chapterDict.ContainsKey("ChapterID") ? chapterDict["ChapterID"].GetInt32() : 0;
+
+
+                                // update the code later for the line below to to be used for more efficnacy
+                                // bad  news the graper graps the values as ints and you also need to change
+                                // them to be as strings so before updating  this  code  update  the  graper
+                                // first and update the /data.json files for most of the Series you have
+
+                                //chapter.ChapterNumber = chapterDict.ContainsKey("ChapterNumber") ? chapterDict["ChapterNumber"].GetString() : null;
+
+
+                                chapter.SeasonTag = chapterDict.ContainsKey("SeasonTag") ? chapterDict["SeasonTag"].GetString() : null;
+                                chapter.Season = chapterDict.ContainsKey("Season") ? chapterDict["Season"].GetInt32() : 0;
+                                chapter.Date = chapterDict.ContainsKey("Date") ? chapterDict["Date"].GetString() : null;
+
+                                chaptersList.Add(chapter);
+                            }
+                            MangasData[_indexManga].ChaptersContent = chaptersList.ToArray();
+                        }
+                        
+                        //Graps the Image
+                        string _imagePath = $"{_folder}/Cover.jpg";
+                        if (File.Exists(_imagePath))
+                        {
+                            using (var stream = File.OpenRead(_imagePath)) // we use the "using" so memory leaks does not occure
+                            {
+                                Bitmap bitmap = new Bitmap(stream);
+
+                                int _localIndex = _indexManga;
+                                Dispatcher.UIThread.InvokeAsync(() =>
+                                {
+
+                                    Image imageControl = new Image
+                                    {
+                                        Source = bitmap,
+                                        Stretch = Avalonia.Media.Stretch.Fill
+                                    };
+                                    MangasData[_localIndex].CoverImage = imageControl;
+                                });
+
+
+                            }
+                        }
+
+
+
+                        //test.Text = $"{MangasData[0].AltirnativeNames[0]}";
+
+                        //Graps the JsonFile For BookMakrs
+                    
                     }
+                    
 
-
-
-                    //test.Text = $"{MangasData[0].AltirnativeNames[0]}";
-
-                    //Graps the JsonFile For BookMakrs
                     _jsonFilePath = $"{_folder}/BookMark.json";
                     if (File.Exists(_jsonFilePath))
                     {
@@ -179,13 +221,11 @@ namespace MangaRaider
 
                             MangasData[_indexManga].Tags = _tags;
                         }
+                        //End of Content Grapping
                     }
-
-                    //End of Content Grapping
                     _indexManga += 1;
                 }
             }
-
         }
         void PassContent()
         {

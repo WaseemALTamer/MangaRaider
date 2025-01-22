@@ -1,13 +1,11 @@
 ﻿using Avalonia;
-using Avalonia.Automation.Peers;
 using Avalonia.Controls;
 using Avalonia.Input;
 using Avalonia.Media;
 using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using static System.Net.Mime.MediaTypeNames;
+
 
 
 class GridChaptersBorder : Border
@@ -33,12 +31,19 @@ class GridChaptersBorder : Border
     private int Chapter;
 
     private TextBlock ChapterText;
+    private TextBlock DateText;
+
     private Border ChapterTextBorder;
+    private Canvas ChapterTextCanvas;
 
     private UniformTransation OpacityAnimation;
 
     private double ActaulChapter;
     private double Season;
+
+    private DateTime ChapterRealseDate;
+    private Border NewLabelImageBoarder;
+    private Avalonia.Controls.Image NewLabelImage;
 
     public GridChaptersBorder(Canvas parent, WindowsStruct windows, MangaContent data, int chapter) {
         Parent = parent;
@@ -59,23 +64,67 @@ class GridChaptersBorder : Border
         };
         Child = ChapterTextBorder;
 
+        ChapterTextCanvas = new Canvas ();
+        ChapterTextBorder.Child = ChapterTextCanvas;
+
         ChapterText = new TextBlock {
                 //Text = $"  {Chapter.ToString()}",
                 Foreground = ChapterNormalColor,
                 FontSize = 20,
                 VerticalAlignment = Avalonia.Layout.VerticalAlignment.Center,
         };
-        ChapterTextBorder.Child = ChapterText;
+        ChapterTextCanvas.Children.Add(ChapterText);
 
-        
+        DateText = new TextBlock {
+            Text ="Null",
+            Foreground = ChapterReadColor,
+            FontSize = 20,
+            VerticalAlignment = Avalonia.Layout.VerticalAlignment.Center,
+            Width = 150
+        };
+        ChapterTextCanvas.Children.Add(DateText);
+
+
         Season = Math.Floor(((double)Chapter /100000));
         ActaulChapter = (Chapter - (100000 * Season))/10;
 
 
-        ChapterText.Text = $"  {ActaulChapter.ToString()}";
+        ChapterText.Text = $"{ActaulChapter.ToString()}";
         if (Season > 1) {
-            ChapterText.Text = $"  Season {Season} Chapter {ActaulChapter}";
+            ChapterText.Text = $"Season {Season} Chapter {ActaulChapter}";
         }
+
+        foreach (Chapter _data in MangaData.ChaptersContent) {
+            if (_data.ChapterID == Chapter) {
+                ChapterText.Text = $" {_data.SeasonTag} {ActaulChapter}";
+                ChapterRealseDate = DateTime.Parse(_data.Date);
+                DateText.Text = $"{ChapterRealseDate.Year}/{ChapterRealseDate.Month}/{ChapterRealseDate.Day}";
+                DateText.Width = 150;
+                break;
+            }
+        }
+
+
+        if (ChapterRealseDate != null) {
+            DateTime _currentDateTime = DateTime.Now;
+            TimeSpan _timeDifference = _currentDateTime - ChapterRealseDate;
+            if (_timeDifference.Days <= 30){
+                NewLabelImageBoarder = new Border
+                {
+                    Height = 42
+                };
+                NewLabelImage = new Avalonia.Controls.Image
+                {
+                    Source = Windows.Assets.NewLabel,
+                    Stretch = Stretch.Uniform
+                };
+                NewLabelImageBoarder.Child = NewLabelImage;
+                ChapterTextCanvas.Children.Add(NewLabelImageBoarder);
+            }
+        }
+
+
+
 
         //this detects if the chapter is read 
         if (MangaData.ChaptersRead != null && MangaData.ChaptersRead.Contains(Chapter)){
@@ -129,6 +178,16 @@ class GridChaptersBorder : Border
 
         ChapterTextBorder.Width = Width - 8;
         ChapterTextBorder.Height = Height - 8;
+
+        ChapterTextCanvas.Width = ChapterTextBorder.Width - 8;
+        ChapterTextCanvas.Height = ChapterTextBorder.Height;
+        Canvas.SetLeft(DateText, ChapterTextCanvas.Width - DateText.Width);
+
+        if (NewLabelImageBoarder != null) {
+            NewLabelImageBoarder.Height = Height;
+            Canvas.SetLeft(NewLabelImageBoarder, ChapterTextBorder.Width - 50);
+        }
+
 
         ChapterText.Width = ChapterTextBorder.Width;
         ChapterText.Height = ChapterTextBorder.Height;

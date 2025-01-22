@@ -127,7 +127,7 @@ class MangaContentSearcher : Canvas
         MangaCoversGrid.ClearVisiableCovers();
         var _lostIndex = 0; // this index is subtracted from the i index to give the next element that is null rather than skip elemetns that are null
         for (int i = 0; i < MangaCoversGrid.MangasData.Length; i++){
-            if (MangaCoversGrid.MangasData[i].Tags != null && MangaCoversGrid.MangasData[i].Tags.Contains("Pined")){
+            if (MangaCoversGrid.MangasData[i] != null && MangaCoversGrid.MangasData[i].Tags != null && MangaCoversGrid.MangasData[i].Tags.Contains("Pined")){
                 MangaCoversGrid.VisableCovers[i - _lostIndex] = MangaCoversGrid.MangasCovers[i];
             }
             else _lostIndex += 1;
@@ -154,7 +154,7 @@ class MangaContentSearcher : Canvas
 
 
         for (int i = 0; i < MangaCoversGrid.MangasData.Length; i++) {
-
+            if (MangaCoversGrid.MangasData[i] == null) continue;
             bool _showFound = false;
             foreach (string _showName in MangaCoversGrid.MangasCovers[i].MangaData.AltirnativeNames)
             {

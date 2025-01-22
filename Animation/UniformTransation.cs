@@ -11,7 +11,7 @@ class UniformTransation
     public double EndingValue;
     public Action<double> Trigger;
     public double CurrentValue;
-    public int Tick = 8; //in ms (this is 125fps
+    public int Tick = 8; //in ms (this is 125fps)
 
 
     private bool FunctionRunning = false;

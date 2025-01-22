@@ -14,4 +14,6 @@ class MangaContent
     public Image CoverImage;
     public string Description;
     public string[] Tags;
+    public string LastUpdate;
+    public Chapter[] ChaptersContent;
 }
