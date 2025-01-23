@@ -33,6 +33,8 @@ class MangaContentSearcher : Canvas
     public TextBox SearchBar;
     public ToggleButton PinToggleButton;
 
+    public ToggleButton ResentUpdateToggleButton;
+
 
 
 
@@ -51,6 +53,19 @@ class MangaContentSearcher : Canvas
         };
         Children.Add(PinToggleButton);
         PinToggleButton.Click += OnClickPinToggleButton;
+
+
+
+
+        ResentUpdateToggleButton = new ToggleButton
+        {
+            Content = "Recent Updates",
+            Background = PinnedButtonBackground,
+            Height = 30,
+        };
+        Children.Add(ResentUpdateToggleButton);
+        ResentUpdateToggleButton.Click += OnClickResentUpdateToggleButton;
+
 
         SearchBar = new TextBox {
             Watermark = "Search",
@@ -103,6 +118,10 @@ class MangaContentSearcher : Canvas
         Canvas.SetLeft(PinToggleButton, 20);
         Canvas.SetTop(PinToggleButton, (Height - PinToggleButton.Height)/2);
 
+        Canvas.SetLeft(ResentUpdateToggleButton, 150);
+        Canvas.SetTop(ResentUpdateToggleButton, (Height - ResentUpdateToggleButton.Height) / 2);
+
+        
 
         Width = Parent.Width * 0.95;
         Height = Parent.Height * 0.09;
@@ -128,6 +147,28 @@ class MangaContentSearcher : Canvas
         var _lostIndex = 0; // this index is subtracted from the i index to give the next element that is null rather than skip elemetns that are null
         for (int i = 0; i < MangaCoversGrid.MangasData.Length; i++){
             if (MangaCoversGrid.MangasData[i] != null && MangaCoversGrid.MangasData[i].Tags != null && MangaCoversGrid.MangasData[i].Tags.Contains("Pined")){
+                MangaCoversGrid.VisableCovers[i - _lostIndex] = MangaCoversGrid.MangasCovers[i];
+            }
+            else _lostIndex += 1;
+        }
+        MangaCoversGrid.PlaceCovers();
+    }
+
+    private void OnClickResentUpdateToggleButton(object sender, object e)
+    {
+
+        if (ResentUpdateToggleButton.IsChecked == false)
+        {
+            MangaCoversGrid.ShowAllCovers();
+            return;
+        }
+
+        MangaCoversGrid.ClearVisiableCovers();
+        var _lostIndex = 0; // this index is subtracted from the i index to give the next element that is null rather than skip elemetns that are null
+        for (int i = 0; i < MangaCoversGrid.MangasData.Length; i++)
+        {
+            if (MangaCoversGrid.MangasData[i] != null && MangaCoversGrid.MangasCovers[i].NewUpdate)
+            {
                 MangaCoversGrid.VisableCovers[i - _lostIndex] = MangaCoversGrid.MangasCovers[i];
             }
             else _lostIndex += 1;

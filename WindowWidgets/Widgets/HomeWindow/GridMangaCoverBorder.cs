@@ -45,6 +45,12 @@ class GridMangaCoverBorder : Border
     private MenuItem MenuItemCopy = new MenuItem{Header = "Copy Name"};
     private MenuItem MenuItemPins = new MenuItem { Header = "Pin" };
 
+    private Border NewLabelBorder;
+    private Image NewLabelImage;
+
+    public bool NewUpdate = false;
+    
+
 
     public GridMangaCoverBorder(MangaContent mangaData, WindowsStruct window)
     {
@@ -170,6 +176,31 @@ class GridMangaCoverBorder : Border
         }
 
 
+
+
+        DateTime _currentDateTime = DateTime.Now;
+        DateTime _seiresLastChapterUpdate = DateTime.Parse(MangaData.ChaptersContent[^1].Date);
+
+        if ((_currentDateTime - _seiresLastChapterUpdate).Days <= 3) {
+            NewUpdate = true;
+            NewLabelBorder = new Border()
+            {
+                Width = 50,
+            };
+            NewLabelImage = new Image
+            {
+                Source = Windows.Assets.NewLabel,
+            };
+            NewLabelBorder.Child = NewLabelImage;
+            ImageBorders.Children.Add(NewLabelBorder);
+        }
+
+
+
+        
+
+
+
         Child = ImageBorders;
         ImageBorders.ClipToBounds = true;
         ClipToBounds = true;
@@ -200,8 +231,10 @@ class GridMangaCoverBorder : Border
 
         Canvas.SetTop(PinnedBorder, 10);
         Canvas.SetLeft(PinnedBorder, 10);
-        
 
+        if (NewLabelBorder != null){
+            Canvas.SetLeft(NewLabelBorder, Width - NewLabelBorder.Width - 10);
+        }
 
         Background = Backgruond;
     }
