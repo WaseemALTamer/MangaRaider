@@ -180,14 +180,18 @@ class MangaCoversCanvasGrid : Canvas
             var Cover = VisableCovers[i];
             
             if (Cover != null) {
-                double _ColumnsNum = Math.Floor(Width / (Cover.Width + PadX));
+                double _SpacePerCover = Width / (Cover.Width + PadX);
+                double _ColumnsNum = Math.Floor(_SpacePerCover);
+                double _LeftSpace = (_SpacePerCover - _ColumnsNum) * (Cover.Width + PadX);
                 double _RowNum = Math.Floor(i / _ColumnsNum);
 
                 if (_ColumnsNum == 0) {
                     _RowNum = i;
                 }
-                
-                double _PosX = (PadX * (i% _ColumnsNum)) + (Cover.Width * (i % _ColumnsNum)) + PadX;
+
+                double _extraspace = _LeftSpace / 2;
+
+                double _PosX = (PadX * (i% _ColumnsNum)) + (Cover.Width * (i % _ColumnsNum)) + PadX + _extraspace;
                 double _PosY = (PadY * ((_RowNum) + 1)) + (Cover.Height * (_RowNum));
 
                 SetLeft(Cover, _PosX);
