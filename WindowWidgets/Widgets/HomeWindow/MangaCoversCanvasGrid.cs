@@ -216,7 +216,7 @@ class MangaCoversCanvasGrid : Canvas
             var Cover = VisableCovers[i];
             if (Cover == null) return;
 
-            double _LowerBounds = ScrollViwerYOffset - Cover.BHeight;
+            double _LowerBounds = ScrollViwerYOffset - (Cover.BHeight + PadY);
             double _UpperBounds = ScrollViwerYOffset + Parent.Height;
 
             double _ColumnsNum = Math.Floor(Width / (Cover.Width + PadX));
