@@ -223,6 +223,21 @@ namespace MangaRaider
                         }
                         //End of Content Grapping
                     }
+
+                    if (MangasData[_indexManga].ChaptersContent != null) {
+                        int[] _tempArray = new int[MangasData[_indexManga].Chapters.Length];
+                        int LostIndex = 0;
+                        for (int i = 0; i < MangasData[_indexManga].ChaptersContent.Length; i++) {
+                            if (MangasData[_indexManga].Chapters.Contains(MangasData[_indexManga].ChaptersContent[i].ChapterID)) {
+                                _tempArray[i - LostIndex] = MangasData[_indexManga].ChaptersContent[i].ChapterID;
+                            }
+                            else {
+                                LostIndex++;
+                            }
+                        }
+                        Array.Copy(_tempArray, MangasData[_indexManga].Chapters, _tempArray.Length);
+                    }
+
                     _indexManga += 1;
                 }
             }

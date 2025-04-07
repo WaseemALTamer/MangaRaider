@@ -147,6 +147,17 @@ class MangaCoversCanvasGrid : Canvas
 
     public void ShowAllCovers()
     {
+        //cheap ass fix which needs to be changed later but i need to fix my sturcutre for this to work but since everything is connected something like this works
+        if (Windows.FirstWindow.MangaSearcher.PinToggleButton.IsChecked == true) {
+            Windows.FirstWindow.MangaSearcher.OnClickPinToggleButton(null, null);
+            return;
+        }
+
+        if (Windows.FirstWindow.MangaSearcher.ResentUpdateToggleButton.IsChecked == true)
+        {
+            Windows.FirstWindow.MangaSearcher.OnClickResentUpdateToggleButton(null, null);
+            return;
+        }
 
         ClearVisiableCovers();
 

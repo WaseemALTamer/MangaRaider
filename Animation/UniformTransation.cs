@@ -79,20 +79,25 @@ class UniformTransation
 
         while (_stopwatch.ElapsedMilliseconds < Duration) {
 
-
-            if (_stopwatch.ElapsedMilliseconds - _timeStamp < Tick){
+            if (_stopwatch.ElapsedMilliseconds - _timeStamp < Tick) {
                 await Task.Delay(Tick / 2);
                 continue;
             }
             _timeStamp += Tick;
             double _delta = (_timeStamp / _duration) * (_endingValue - _startingValue);
+
             CurrentValue = _delta + _startingValue;
 
-
-            if (Trigger != null) Trigger(CurrentValue);
-            
+            // this if statement is a for redundency for NaN values and also 
+            if (Trigger != null && !double.IsNaN(CurrentValue)&& 
+                CurrentValue <= Math.Max(StartingValue, EndingValue) && 
+                CurrentValue >= Math.Min(StartingValue, EndingValue)) 
+                Trigger(CurrentValue);
         }
-        if (Trigger != null) Trigger(_endingValue);
+        if (Trigger != null && !double.IsNaN(_endingValue) &&
+            CurrentValue <= Math.Max(StartingValue, EndingValue) &&
+            CurrentValue >= Math.Min(StartingValue, EndingValue))
+            Trigger(_endingValue);
 
         FunctionRunning = false;
     }

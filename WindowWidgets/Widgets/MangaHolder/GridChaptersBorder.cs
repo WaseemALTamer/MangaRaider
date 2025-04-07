@@ -95,7 +95,7 @@ class GridChaptersBorder : Border
         }
 
         foreach (Chapter _data in MangaData.ChaptersContent) {
-            if (_data.ChapterID == Chapter) {
+            if (_data.ChapterID == Chapter && _data.Date != null) {
                 ChapterText.Text = $" {_data.SeasonTag} {ActaulChapter}";
                 ChapterRealseDate = DateTime.Parse(_data.Date);
                 DateText.Text = $"{ChapterRealseDate.Year}/{ChapterRealseDate.Month}/{ChapterRealseDate.Day}";

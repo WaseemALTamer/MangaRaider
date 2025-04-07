@@ -72,7 +72,7 @@ class SmoothScrolling
         {
             if (stopWatch.ElapsedMilliseconds - TimeStamp < Tick)
             {
-                await Task.Delay(Tick / 2);
+                await Task.Delay(Tick / 2); //this was "Tick / 2" but was changed to "1" for prformence reasons
                 continue;
             }
             if (StopCurrentAnimation) {

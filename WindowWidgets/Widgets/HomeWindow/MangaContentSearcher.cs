@@ -31,8 +31,8 @@ class MangaContentSearcher : Canvas
     public WindowsStruct Windows;
 
     public TextBox SearchBar;
-    public ToggleButton PinToggleButton;
 
+    public ToggleButton PinToggleButton;
     public ToggleButton ResentUpdateToggleButton;
 
 
@@ -136,7 +136,7 @@ class MangaContentSearcher : Canvas
         SearchBar.Foreground = GreyTextBackground;
     }
 
-    private void OnClickPinToggleButton(object sender, object e) {
+    public void OnClickPinToggleButton(object sender, object e) {
         
         if (PinToggleButton.IsChecked == false) {
             MangaCoversGrid.ShowAllCovers();
@@ -154,7 +154,7 @@ class MangaContentSearcher : Canvas
         MangaCoversGrid.PlaceCovers();
     }
 
-    private void OnClickResentUpdateToggleButton(object sender, object e)
+    public void OnClickResentUpdateToggleButton(object sender, object e)
     {
 
         if (ResentUpdateToggleButton.IsChecked == false)
@@ -165,9 +165,8 @@ class MangaContentSearcher : Canvas
 
         MangaCoversGrid.ClearVisiableCovers();
         var _lostIndex = 0; // this index is subtracted from the i index to give the next element that is null rather than skip elemetns that are null
-        for (int i = 0; i < MangaCoversGrid.MangasData.Length; i++)
-        {
-            if (MangaCoversGrid.MangasData[i] != null && MangaCoversGrid.MangasCovers[i].NewUpdate)
+        for (int i = 0; i < MangaCoversGrid.MangasData.Length; i++){
+            if (MangaCoversGrid.MangasData[i] != null && MangaCoversGrid.MangasCovers[i] != null && MangaCoversGrid.MangasCovers[i].NewUpdate)
             {
                 MangaCoversGrid.VisableCovers[i - _lostIndex] = MangaCoversGrid.MangasCovers[i];
             }

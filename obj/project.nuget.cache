@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "fppJYjx0nPI=",
+  "dgSpecHash": "wEG9VoLiQKw=",
   "success": true,
-  "projectFilePath": "F:\\Projects\\MangaReader\\MangaReader\\MangaReader\\MangaRaider.csproj",
+  "projectFilePath": "F:\\Projects\\MangaReader\\MangaReader\\MangaRaider\\MangaRaider.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\wasee\\.nuget\\packages\\avalonia\\11.0.10\\avalonia.11.0.10.nupkg.sha512",
     "C:\\Users\\wasee\\.nuget\\packages\\avalonia.angle.windows.natives\\2.1.0.2023020321\\avalonia.angle.windows.natives.2.1.0.2023020321.nupkg.sha512",

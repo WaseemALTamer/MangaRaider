@@ -18,6 +18,7 @@ class GridPageBorders: Border
     public Canvas Parent;
     public Image PageImage;
 
+
     public int PageWidth;
     public int PageHeight;
 
@@ -38,33 +39,39 @@ class GridPageBorders: Border
         IsHitTestVisible = false;
         IsVisible = false;
 
-
-        using (var stream = File.OpenRead(Directory)) // we use the "using" so memory leaks does not occure
-        {
-            Bitmap bitmap = new Bitmap(stream);
-
-            PageWidth = bitmap.PixelSize.Width;
-            PageHeight = bitmap.PixelSize.Height;
-
-
-
-            Width = Parent.Width;
-
-            if (Parent.Width < PageWidth * ImageScaler){
-                Height = (Parent.Width / PageWidth) * PageHeight;
-            }
-            else{
-                Height = PageHeight * ImageScaler;
-            }
-
-            PageImage = new Image
+        if (File.Exists(Directory)) {
+            using (var stream = File.OpenRead(Directory)) // we use the "using" so memory leaks does not occure
             {
-                Source = bitmap,
-                Stretch = Avalonia.Media.Stretch.Uniform,
-                VerticalAlignment = Avalonia.Layout.VerticalAlignment.Top,
-                
+                Bitmap bitmap = new Bitmap(stream);
+
+                PageWidth = bitmap.PixelSize.Width;
+                PageHeight = bitmap.PixelSize.Height;
+
+
+
+                Width = Parent.Width;
+
+                if (Parent.Width < PageWidth * ImageScaler)
+                {
+                    Height = (Parent.Width / PageWidth) * PageHeight;
+                }
+                else
+                {
+                    Height = PageHeight * ImageScaler;
+                }
+
+
+                PageImage = new Image
+                {
+                    Source = bitmap,
+                    Stretch = Avalonia.Media.Stretch.Uniform,
+                    VerticalAlignment = Avalonia.Layout.VerticalAlignment.Top,
+                    IsHitTestVisible = false
+                };
+
             };
-        };
+        }
+
 
         Child = PageImage;
 

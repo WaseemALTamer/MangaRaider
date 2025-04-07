@@ -15,8 +15,9 @@ class HomeWindow : Canvas
 
     public MainWindow Parent;
 
+    public MangaContentSearcher MangaSearcher;
     private MangaCoversScrollViewer MangaScrollViewerWidget;
-    private MangaContentSearcher MangaSearcher;
+    
 
     public HomeWindow(MainWindow parentWindow)
     {

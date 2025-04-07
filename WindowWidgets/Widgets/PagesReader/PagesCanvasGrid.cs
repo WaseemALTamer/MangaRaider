@@ -33,13 +33,16 @@ class PagesCanvasGrid : Canvas
     public GridPageBorders ImageHolder;
     public GridPageBorders[] ImageHolders; // this is for the long strip
 
-    private double ImageScaler = 1;
+    private double ImageScaler = 0.8;
 
     private Button ChapterButton;
     private Button PageButton;
     private Button BookMarkButton;
 
     private Button ImageScalerButton;
+
+    private Button NextChapter;
+    private Button PreviousChapter;
 
 
     private ToggleButton LongStripToggleButton;
@@ -78,11 +81,31 @@ class PagesCanvasGrid : Canvas
 
         ImageScalerButton = new Button
         {
-            Content = "Test",
+            Content = "Scale: XX",
             Background = BordersColor,
             MinWidth = 50,
         };
         Children.Add(ImageScalerButton);
+
+
+        NextChapter = new Button
+        {
+            Content = "Next Chapter",
+            Background = BordersColor,
+            MinWidth = 50,
+        };
+        NextChapter.Click += OnNextChapterClick;
+        Children.Add(NextChapter);
+
+
+        PreviousChapter = new Button
+        {
+            Content = "Previous Chapter",
+            Background = BordersColor,
+            MinWidth = 50,
+        };
+        PreviousChapter.Click += OnPreviousChapter;
+        Children.Add(PreviousChapter);
 
 
         LongStripToggleButton = new ToggleButton
@@ -101,6 +124,7 @@ class PagesCanvasGrid : Canvas
         BookMarkButton.KeyDown += OnKeyDown;
         ImageScalerButton.KeyDown += OnKeyDown;
         LongStripToggleButton.KeyDown += OnKeyDown;
+
 
 
         Parent.KeyDown += OnKeyDown;
@@ -136,11 +160,6 @@ class PagesCanvasGrid : Canvas
         }
 
         //Add the button to the grid if needed 
-        if (ChapterButton.Parent == null) Children.Add(ChapterButton);
-        if (PageButton.Parent == null) Children.Add(PageButton);
-        if (BookMarkButton.Parent == null) Children.Add(BookMarkButton);
-        if (ImageScalerButton.Parent == null) Children.Add(ImageScalerButton);
-        if (LongStripToggleButton.Parent == null) Children.Add(LongStripToggleButton);
 
 
 
@@ -149,6 +168,13 @@ class PagesCanvasGrid : Canvas
 
         Canvas.SetLeft(PageButton, 10);
         Canvas.SetTop(PageButton, 60 + Parent.Offset.Y);
+
+        Canvas.SetLeft(NextChapter, 10);
+        Canvas.SetTop(NextChapter, 110 + Parent.Offset.Y);
+
+        Canvas.SetLeft(PreviousChapter, 10);
+        Canvas.SetTop(PreviousChapter, 160 + Parent.Offset.Y);
+
 
         Canvas.SetLeft(BookMarkButton, 10);
         Canvas.SetTop(BookMarkButton, Parent.Height + Parent.Offset.Y - 50);
@@ -174,8 +200,6 @@ class PagesCanvasGrid : Canvas
         ChapterData.PrevPage = PrevPage;
 
         DisplayPage();
-        
-      
     }
 
     public void NextPage(){
@@ -258,7 +282,7 @@ class PagesCanvasGrid : Canvas
             return;
         }
 
-        Children.Clear();
+        ClearAllImages();
 
         UpdateWidget();
 
@@ -281,25 +305,28 @@ class PagesCanvasGrid : Canvas
     
 
     async public void DisplayAllPages() {
-        Children.Clear();
+        ClearAllImages();
         UpdateWidget();
+        int _CurrentChapter = ChapterData.Chapter;
 
         if (ImageHolder != null) {
             ImageHolder = null; // we can remove the single image for the grabage collector
         }
         SmoothScrollingAnimation.StopCurrentAnimation = true;
         Parent.Offset = new Point(0, 0);
-
         ImageHolders = new GridPageBorders[ChapterData.NumberOfPages];
 
         for (int i = 0; i < ChapterData.NumberOfPages; i++) {
             if (LongStrip == false || ImageHolders == null) return;
+            if (_CurrentChapter != ChapterData.Chapter) {
+                return; 
+            }
 
 
             ImageHolders[i] = new GridPageBorders(this, ChapterData.Path + $@"\{i + 1}.png", ImageScaler);
             ImageHolders[i].IsVisible = false;
             PlaceData();
-            await Task.Delay(20); // we can await delay to leave other operations to run perfectly
+            await Task.Delay(200); // we can await delay to leave other operations to run perfectly
         }
 
         Avalonia.Threading.Dispatcher.UIThread.Post(() => { // this ensure that we set focase on the parent after the avolana thread is excuated
@@ -308,7 +335,7 @@ class PagesCanvasGrid : Canvas
     }
 
 
-    public void PlaceData(double ScroolBarProggressPrecentage = -1)
+    public void PlaceData(double ScrollBarProggressPrecentage = -1)
     {
         if (ImageHolder != null)
         {
@@ -319,9 +346,13 @@ class PagesCanvasGrid : Canvas
 
         if (ImageHolders != null)
         {
+            double _height = 0;
             double _yPos = 0;
-            foreach (var _imageHolder in ImageHolders)
-            {
+
+            if (ImageHolders[0] != null) {
+                Height = (ImageHolders[0].Height * ImageHolders.Length) + (ImageHolders[0].Height * AfterImagesPadY);
+            }
+            foreach (var _imageHolder in ImageHolders){
                 // this sets the X position
                 if (_imageHolder == null) return;
 
@@ -333,13 +364,14 @@ class PagesCanvasGrid : Canvas
 
                 _yPos += _imageHolder.Height;
 
-                Height = _yPos + (_imageHolder.Height * AfterImagesPadY);
+                _height = _yPos + (_imageHolder.Height * AfterImagesPadY);
                 ShowOnlyVisibleScreen(Parent.Offset.Y);
             }
+            Height = _height;
         }
 
-        if (ScroolBarProggressPrecentage != -1){
-            Parent.Offset = new Point(0, ScroolBarProggressPrecentage * Height);
+        if (ScrollBarProggressPrecentage != -1){
+            Parent.Offset = new Point(0, ScrollBarProggressPrecentage * Height);
         }
 
         
@@ -369,6 +401,20 @@ class PagesCanvasGrid : Canvas
             }
         }
 
+    }
+
+    public void ClearAllImages() {
+
+        if (ImageHolder != null && Children.Contains(ImageHolder)) Children.Remove(ImageHolder);
+        if (ImageHolders != null){
+            for (int i = 0; i < ImageHolders.Length; i++){
+                var child = ImageHolders[i];
+                if (child != null && Children.Contains(child)){
+                    Children.Remove(child);
+                }
+            }
+        }
+        GC.Collect();
     }
 
 
@@ -420,8 +466,10 @@ class PagesCanvasGrid : Canvas
             {
                 var pointerPosition = e.GetPosition(control);
 
+                if (LongStrip) return;
                 if (pointerPosition.X < 0 || pointerPosition.Y < 0) return;
                 if (pointerPosition.X > Width || pointerPosition.Y > Height) return;
+                
 
                 if (pointerPosition.X >= Width / 2)
                 {
@@ -435,6 +483,58 @@ class PagesCanvasGrid : Canvas
         }
     }
 
+    private void OnNextChapterClick(object sender, object e) {
+        bool NextChapterExist = false;
+        for (int i = 0; i < ChapterData.Chapters.Length; i++)
+        {
+            if (ChapterData.Chapter == ChapterData.Chapters[i])
+            {
+                if (i + 1 < ChapterData.Chapters.Length)
+                {
+                    ChapterData.Chapter = ChapterData.Chapters[i + 1];
+                    ChapterData.GrapPages();
+                    ChapterData.CurrentPageNum = 1;
+                    NextChapterExist = true;
+                    break;
+                };
+            }
+        }
+
+        if (!LongStrip){
+            DisplayPage();
+        }
+        else{
+            DisplayAllPages();
+        }
+    }
+
+    private void OnPreviousChapter(object sender, object e) {
+        ChapterData.CurrentPageNum = 1;
+        bool PrevChapterExist = false;
+        for (int i = 0; i < ChapterData.Chapters.Length; i++){
+            if (ChapterData.Chapter == ChapterData.Chapters[i]){
+                if (i - 1 >= 0){
+                    ChapterData.Chapter = ChapterData.Chapters[i - 1];
+                    ChapterData.GrapPages();
+                    ChapterData.CurrentPageNum = 1;
+                    PrevChapterExist = true;
+                    break;
+                };
+            }
+        }
+
+        if (!PrevChapterExist){
+            return;
+        }
+
+        if (!LongStrip){
+            DisplayPage();
+        }
+        else{
+            DisplayAllPages();
+        }
+
+    }
 
     private void OnBookMarkButtonClicked(object sender, object e) {
 
@@ -451,6 +551,8 @@ class PagesCanvasGrid : Canvas
         }
         
     }
+
+    
 
 
 

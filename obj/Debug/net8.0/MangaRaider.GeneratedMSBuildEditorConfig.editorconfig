@@ -13,12 +13,12 @@ build_property.PlatformNeutralAssembly =
 build_property.EnforceExtendedAnalyzerRules = 
 build_property._SupportedPlatformList = Linux,macOS,Windows
 build_property.RootNamespace = MangaRaider
-build_property.ProjectDir = F:\Projects\MangaReader\MangaReader\MangaReader\
+build_property.ProjectDir = F:\Projects\MangaReader\MangaReader\MangaRaider\
 build_property.EnableComHosting = 
 build_property.EnableGeneratedComInterfaceComImportInterop = 
 
-[F:/Projects/MangaReader/MangaReader/MangaReader/App.axaml]
+[F:/Projects/MangaReader/MangaReader/MangaRaider/App.axaml]
 build_metadata.AdditionalFiles.SourceItemGroup = AvaloniaXaml
 
-[F:/Projects/MangaReader/MangaReader/MangaReader/MainWindow.axaml]
+[F:/Projects/MangaReader/MangaReader/MangaRaider/MainWindow.axaml]
 build_metadata.AdditionalFiles.SourceItemGroup = AvaloniaXaml

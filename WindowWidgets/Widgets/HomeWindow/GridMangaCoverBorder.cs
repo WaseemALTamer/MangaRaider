@@ -9,6 +9,7 @@ using Avalonia.Media.Imaging;
 using System.Linq;
 using Microsoft.VisualBasic;
 using static System.Runtime.InteropServices.JavaScript.JSType;
+using System.Reflection;
 
 
 
@@ -148,7 +149,7 @@ class GridMangaCoverBorder : Border
             Stretch = Avalonia.Media.Stretch.Uniform,
             Focusable = true,
             IsHitTestVisible = true,
-        };  
+        };
 
         PinnedBorder.Child = PinnedImage;
 
@@ -177,29 +178,34 @@ class GridMangaCoverBorder : Border
 
 
 
+        if (MangaData.LastUpdate != null)
+        {
+            DateTime _currentDateTime = DateTime.Now;
+            DateTime _seiresLastChapterUpdate = DateTime.Parse(MangaData.ChaptersContent[MangaData.ChaptersContent.Length - 1].Date);
 
-        DateTime _currentDateTime = DateTime.Now;
-        DateTime _seiresLastChapterUpdate = DateTime.Parse(MangaData.ChaptersContent[^1].Date);
-
-        if ((_currentDateTime - _seiresLastChapterUpdate).Days <= 3) {
-            NewUpdate = true;
-            NewLabelBorder = new Border()
+            if ((_currentDateTime - _seiresLastChapterUpdate).Days <= 3)
             {
-                Width = 50,
-            };
-            NewLabelImage = new Image
-            {
-                Source = Windows.Assets.NewLabel,
-            };
-            NewLabelBorder.Child = NewLabelImage;
-            ImageBorders.Children.Add(NewLabelBorder);
+                NewUpdate = true;
+                NewLabelBorder = new Border()
+                {
+                    Width = 50,
+                };
+                NewLabelImage = new Image
+                {
+                    Source = Windows.Assets.NewLabel,
+                };
+                NewLabelBorder.Child = NewLabelImage;
+                ImageBorders.Children.Add(NewLabelBorder);
+            }
         }
 
 
 
-        
 
 
+
+
+        PropertyChanged += OnPropertyChanged;
 
         Child = ImageBorders;
         ImageBorders.ClipToBounds = true;
@@ -212,6 +218,7 @@ class GridMangaCoverBorder : Border
     }
 
     private void OnDisplay(object sender, VisualTreeAttachmentEventArgs e){
+        Canvas.SetTop(MangaNameBlock, ImageBorders.Height); // i put this here because i dont want it to disturbe the postion when it is moving through the animation
         UpdateWidget();
     }
 
@@ -226,7 +233,6 @@ class GridMangaCoverBorder : Border
         CoverImageHolder.Height = ImageBorders.Height;
 
         MangaNameBlock.Width = BWidth;
-        Canvas.SetTop(MangaNameBlock, ImageBorders.Height);
 
 
         Canvas.SetTop(PinnedBorder, 10);
@@ -234,6 +240,13 @@ class GridMangaCoverBorder : Border
 
         if (NewLabelBorder != null){
             Canvas.SetLeft(NewLabelBorder, Width - NewLabelBorder.Width - 10);
+        }
+
+        //redundent if statmenet because for some reason pinned images where not showing this need investigation because newer hardware works fine
+        if (MangaData.Tags != null && MangaData.Tags.Contains("Pined") && PinnedBorder.Opacity != 1){
+            MenuItemPins.Header = "UnPin";
+            PinnedImage.Source = Windows.Assets.PinActive;
+            PinnedBorder.Opacity = 1;
         }
 
         Background = Backgruond;
@@ -245,7 +258,6 @@ class GridMangaCoverBorder : Border
 
     private void TextTransationTrigger(double Value){
         Canvas.SetTop(MangaNameBlock, ImageBorders.Height - (MangaNameBlock.Height*Value));
-
 
         if (MangaData.Tags == null || !MangaData.Tags.Contains("Pined"))
         {

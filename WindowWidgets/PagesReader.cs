@@ -182,9 +182,11 @@ class PagesReader : Canvas
         Windows.MasterWindow.Content = Windows.SecondWindow;
 
 
-        pageScrollViwer.CanvasGrid.Children.Clear();
+        pageScrollViwer.CanvasGrid.ClearAllImages();
         pageScrollViwer.CanvasGrid.ImageHolder = default;
         pageScrollViwer.CanvasGrid.ImageHolders = default;
+
+        GC.Collect();
     }
 
     private void OnClickFullScreenButton(object sender, object e) {
